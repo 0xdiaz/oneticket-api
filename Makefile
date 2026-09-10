@@ -6,6 +6,8 @@ help:
 	@echo 'Usage: make [TARGET] [EXTRA_ARGUMENTS]'
 	@echo 'Targets:'
 	@echo '  make dev           - development (docker-compose up)'
+	@echo '  make test-integration - integration tests (Testcontainers, no setup needed)'
+	@echo '  make test-all      - unit + integration with -race'
 	@echo '  make loadtest      - reset demo event + flash sale oversell test'
 	@echo '  make build        - build container'
 	@echo '  make production   - docker production build'
@@ -21,6 +23,12 @@ help:
 
 MIGRATE_DB_URL = postgres://$(MASTER_DB_USER):$(MASTER_DB_PASSWORD)@$(MASTER_DB_HOST):$(MASTER_DB_PORT)/$(MASTER_DB_NAME)?sslmode=$(or $(MASTER_SSL_MODE),disable)
 MIGRATE_PATH = internal/adapters/database/migrations/sql
+
+test-integration:
+	go test ./tests/integration/... -race
+
+test-all:
+	go test ./tests/... -race
 
 loadtest:
 	./scripts/loadtest/reset.sh
