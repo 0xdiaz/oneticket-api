@@ -161,6 +161,9 @@ Siapkan **parking lot** — tulis di papan, jawab di segmen 01:50.
       balas `BELUM ADA YANG TERJUAL` (404) — itu kondisi awal yang benar
 - [ ] `RATE_LIMIT_RPS=1000` di `.env` — di 100, rate limiter nolak duluan dan
       **oversell-nya nggak akan pernah muncul**
+- [ ] Testcontainers siap: `docker image inspect postgres:16-alpine` sukses, dan
+      modul `testcontainers-go` sudah ada di module cache — dua-duanya operasi
+      jaringan yang tidak boleh terjadi di panggung
 - [ ] Seed prompt brainstorm + plan ada di `docs/demo/prompts.md`, tinggal paste
 - [ ] Daftar pertanyaan yang muncul saat dry run + jawaban satu kalimat masing-masing
 - [ ] Branch `demo/plan-ready` berisi `docs/plans/checkout.md` hasil dry run (parasut)

@@ -9,15 +9,17 @@ Urutan mengikuti [`DEMO_RUNSHEET.md`](../DEMO_RUNSHEET.md).
 
 ## Sebelum dipakai: beda dari template harian
 
-Template CE yang biasa dipakai mengasumsikan stack lain. Yang **tidak ada di repo ini**
-dan sudah dibuang dari prompt di bawah:
+Template CE yang biasa dipakai menyebut beberapa hal dari case lain. Penyesuaiannya:
 
 | Di template harian | Di repo ini |
 |---|---|
 | `/workflows:brainstorm` dst. | Tidak ada plugin `workflows`. Perintahnya `/ce-brainstorm`, `/ce-plan`, `/ce-work`, `/ce-code-review` |
-| Bruno | Tidak ada. Padanannya `api/openapi.yaml` — spec-nya sudah cocok 100% dengan route terdaftar, jadi fitur baru wajib masuk ke sana |
-| Testcontainers | Tidak ada. Integration test yang ada pakai `TEST_DB_MASTER_DSN` dan skip kalau env-nya kosong |
-| RabbitMQ, Redis | Tidak ada sama sekali |
+| Bruno | Dilewati |
+| Testcontainers | **Dipakai.** Integration test yang ada masih pakai `TEST_DB_MASTER_DSN` + `t.Skip`; yang baru harus Testcontainers supaya self-contained |
+| RabbitMQ, Redis | Dari case lain, tidak dipakai di sini |
+
+Update `api/openapi.yaml` tetap wajib untuk endpoint baru — spec-nya saat ini cocok
+100% dengan route yang terdaftar, dan angka itu jangan sampai rusak.
 
 ### Satu instruksi yang sengaja dibalik
 
@@ -56,6 +58,8 @@ Constraint:
 - Uang selalu integer (price_cents, int64). Tidak boleh float.
 - Update api/openapi.yaml untuk endpoint baru. Spec saat ini cocok 100% dengan
   route yang terdaftar, jangan sampai melenceng.
+- Integration test pakai Testcontainers (Postgres asli di container, bukan mock,
+  bukan env var). Test harus jalan tanpa setup manual.
 
 Sudah diputuskan, tidak perlu digali lagi:
 - Tabel events dan tickets sudah ada. Satu baris tickets = satu kursi, punya code
@@ -208,10 +212,15 @@ Unit test:
 - Fake wajib punya assertion var _ repositories.XRepository = (*MockX)(nil).
 
 Integration test:
-- Lokasi tests/integration/, pakai DB Postgres asli.
-- Ikuti pattern yang sudah ada: baca DSN dari env TEST_DB_MASTER_DSN, dan
-  t.Skip kalau env-nya kosong. Lihat tests/integration/database/connection_test.go.
-- DB tidak boleh di-mock. Harus ada full flow.
+- Lokasi tests/integration/, harus ada full flow.
+- Pakai Testcontainers untuk deploy stack-nya: Postgres asli di container,
+  migrasi dijalankan ke container itu, lalu test jalan di atasnya.
+- DB tidak boleh di-mock. Pihak ketiga (kalau nanti ada) semua di-mock.
+- Container dibagi satu per package lewat TestMain, jangan satu container per
+  test — itu yang bikin lewat budget waktu.
+- Test harus jalan dengan `go test ./tests/integration/...` tanpa setup manual
+  dan tanpa env var. Pattern lama yang membaca TEST_DB_MASTER_DSN lalu t.Skip
+  boleh tetap ada untuk test yang sudah ada, tapi jangan dipakai untuk yang baru.
 
 Negative test harus mencakup semua logic validasi.
 
