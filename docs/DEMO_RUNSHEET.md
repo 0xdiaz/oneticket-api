@@ -18,6 +18,35 @@ situ, potong.
 
 ---
 
+## Framing pembukaan (menit 00:00–00:08)
+
+Dua bingkai ini dipakai supaya audiens punya peta sebelum lihat terminal.
+
+**1. Empat tingkat cara pakai agent** — supaya jelas yang didemokan ini yang mana:
+
+```
+Claude Code single agent      -> mengendalikan 1 agent
+Background agent              -> agent otomatis, bisa mereview agent
+Human orchestrator multi-agent-> manusia mengendalikan banyak agent
+AI orchestrator multi-agent   -> agent mengendalikan agent
+```
+
+Sesi ini di tingkat 1 dan menyentuh 2 (`ce-code-review` menyebar beberapa persona
+paralel + peer cross-model). Sebut ini di depan supaya tidak ada yang menyangka
+lagi lihat swarm otonom.
+
+**2. Pipeline-nya** — dan tunjukkan kotak mana yang dijalankan hari ini:
+
+```
+Brainstorm/Analisa -> Planning -> Work + Verifikasi -> Review -> Compound/Learn
+      [1]               [2]            [3][4]           [5]         [6][7]
+```
+
+Semua kotak dijalankan live hari ini. Itu poin yang layak disebut: bukan potongan,
+tapi satu putaran penuh.
+
+---
+
 ## Dua jenis nunggu
 
 Ini yang menentukan seluruh struktur di bawah.
@@ -64,7 +93,7 @@ tolak di tempat — refund adalah story kedua, dan itu justru buktinya nanti.
 
 | Waktu | Durasi | Segmen | Q&A? |
 |---|---|---|---|
-| 00:00 | 8' | **Pembukaan + thesis** | — |
+| 00:00 | 8' | **Pembukaan + thesis** — 4 tingkat agent, peta pipeline | — |
 | 00:08 | 8' | **Kondisi awal repo** — AI rules, doc yang sudah disamakan, test yang ada | — |
 | 00:16 | 12' | 🎬 **`/ce-brainstorm`** — live, time box keras | ❌ lo jawab agent |
 | 00:28 | 15' | 🎬 **`/ce-plan`** — live, menghasilkan `docs/plans/checkout.md` | ❌ lo jawab agent |
@@ -82,6 +111,11 @@ harga yang dibayar. Urutan potong kalau molor:
 1. `ce-code-review` (10') — sebut saja hasilnya, jangan dijalankan
 2. Segmen planning, lewat parasut `demo/plan-ready`
 3. **Jangan** potong segmen debug, **jangan** potong story kedua — dua itu tesisnya
+
+**Kalau justru kelebihan waktu**, satu beat cadangan yang murah karena
+`api/openapi.yaml` sudah cocok 100% dengan route: jalankan fuzzing API dari spec
+(Schemathesis) dan lihat apakah endpoint checkout yang baru tahan input aneh.
+Jangan dijadwalkan — hanya kalau ada sisa.
 
 ---
 

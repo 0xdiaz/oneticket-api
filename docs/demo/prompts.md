@@ -68,6 +68,8 @@ yang duplicate atau redundant — kalau dua task menyentuh file yang sama, gabun
 atau beri urutan yang jelas.
 
 Plan harus menyebut eksplisit:
+- Acceptance criteria per task — kondisi terukur yang menyatakan task itu selesai.
+  Setiap acceptance criteria harus punya test yang membuktikannya.
 - Migrasi baru beserta .down.sql-nya.
 - Bagaimana kepemilikan tiket dimodelkan.
 - Titik mana yang menulis ke database, lewat repository yang mana.
@@ -120,8 +122,11 @@ Kerjakan paralel sesuai plan, dan pertahankan urutan TDD: test ditulis dan
 dilihat gagal dulu, baru implementasinya.
 
 Commit kecil-kecil agar mudah direview. Jalankan gofmt, go vet, dan go build
-sebelum tiap commit. Verifikasi dengan menjalankan test. Kalau ada issue,
-perbaiki. Di akhir jalankan semua test dengan -race agar tidak ada regresi.
+sebelum tiap commit.
+
+Kalau ada test yang gagal, jalankan ulang HANYA test itu (-run) sampai hijau.
+Jangan jalankan seluruh suite tiap iterasi — itu mahal dan lambat. Suite penuh
+dengan -race cukup sekali di akhir untuk memastikan tidak ada regresi.
 ```
 
 `mode:return-to-caller` menahan *shipping tail*-nya — tanpa itu `ce-work` bisa
@@ -146,8 +151,15 @@ Setelah angkanya muncul:
 /ce-debug Load test barusan menjual 300 tiket dari inventaris 100, dan beberapa
 kode tiket terjual ke lebih dari satu pembeli.
 
-Cari akar masalahnya. Tulis dulu test yang gagal untuk membuktikannya, baru
-perbaiki. Test itu harus tetap ada setelah fix sebagai regresi.
+Ikuti alur ini, jangan langsung lompat ke perbaikan:
+1. Reproduce — tulis test otomatis yang gagal dan membuktikan bugnya. Merah dulu.
+2. Root analysis — jelaskan penyebabnya, bukan gejalanya.
+3. Prioritas — kalau ketemu lebih dari satu masalah, urutkan berdasarkan dampak.
+4. Rekomendasi — sebutkan opsi perbaikan beserta trade-off-nya sebelum memilih.
+5. Fix sampai hijau.
+
+Test dari langkah 1 harus tetap ada setelah fix sebagai regresi. Selama
+iterasi, jalankan hanya test itu (-run), bukan seluruh suite.
 ```
 
 Setelah fix:
