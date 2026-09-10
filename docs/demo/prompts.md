@@ -7,35 +7,6 @@ Urutan mengikuti [`DEMO_RUNSHEET.md`](../DEMO_RUNSHEET.md).
 
 ---
 
-## Sebelum dipakai: beda dari template harian
-
-Template CE yang biasa dipakai menyebut beberapa hal dari case lain. Penyesuaiannya:
-
-| Di template harian | Di repo ini |
-|---|---|
-| `/workflows:brainstorm` dst. | Tidak ada plugin `workflows`. Perintahnya `/ce-brainstorm`, `/ce-plan`, `/ce-work`, `/ce-code-review` |
-| Bruno | Dilewati |
-| Testcontainers | **Dipakai.** Integration test yang ada masih pakai `TEST_DB_MASTER_DSN` + `t.Skip`; yang baru harus Testcontainers supaya self-contained |
-| RabbitMQ, Redis | Dari case lain, tidak dipakai di sini |
-
-Update `api/openapi.yaml` tetap wajib untuk endpoint baru — spec-nya saat ini cocok
-100% dengan route yang terdaftar, dan angka itu jangan sampai rusak.
-
-### Satu instruksi yang sengaja dibalik
-
-Template harian selalu ditutup dengan **"Tanya saya lebih detail dan mendalam agar
-akurat."** Untuk kerja sehari-hari itu benar — makin dalam agent bertanya, makin akurat
-hasilnya.
-
-Di panggung itu justru yang membakar anggaran waktu. Elicitation tak berbatas + presenter
-yang berpikir sambil bicara = setengah sesi hilang. Jadi prompt di bawah membalik
-instruksi itu jadi **batas pertanyaan yang eksplisit**.
-
-Versi harian tetap disimpan di bagian [Versi harian](#versi-harian) di bawah, untuk
-dipakai lagi setelah meetup selesai.
-
----
-
 ## [1] `/ce-brainstorm` — time box 12 menit
 
 ```
@@ -245,26 +216,3 @@ git checkout demo/plan-ready
 Bilang apa adanya: *"ini yang tadi mau dia hasilkan, gue potong biar kita sempat lihat
 bagian implementasinya."* Audiens tidak akan keberatan. Kehabisan waktu di menit 90
 jauh lebih mahal daripada mengakui satu segmen dipotong.
-
----
-
-## Versi harian
-
-Setelah meetup, untuk kerja normal di repo ini, pakai versi tanpa batas pertanyaan —
-tutup prompt brainstorm dengan kalimat aslinya:
-
-```
-Tanya saya lebih detail dan mendalam agar akurat.
-```
-
-dan hapus baris `Batasi ke maksimal 5 pertanyaan...`. Elicitation yang dalam memang
-menghasilkan plan yang lebih akurat; yang tidak cocok cuma panggungnya.
-
-Untuk task khusus menulis test (bukan fitur), pola yang sudah terbukti:
-
-```
-/ce-work Kerjakan di branch baru. Commit kecil-kecil agar mudah direview.
-Jalankan linter sebelum commit. Di akhir task jalankan semua test agar tidak
-terjadi regresi. Jangan sentuh code production, tugas kamu hanya membuat test.
-Pastikan semua test tidak melebihi 3 menit, optimize.
-```
