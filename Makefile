@@ -6,6 +6,7 @@ help:
 	@echo 'Usage: make [TARGET] [EXTRA_ARGUMENTS]'
 	@echo 'Targets:'
 	@echo '  make dev           - development (docker-compose up)'
+	@echo '  make loadtest      - reset demo event + flash sale oversell test'
 	@echo '  make build        - build container'
 	@echo '  make production   - docker production build'
 	@echo '  make clean        - remove docker volumes/images'
@@ -20,6 +21,10 @@ help:
 
 MIGRATE_DB_URL = postgres://$(MASTER_DB_USER):$(MASTER_DB_PASSWORD)@$(MASTER_DB_HOST):$(MASTER_DB_PORT)/$(MASTER_DB_NAME)?sslmode=$(or $(MASTER_SSL_MODE),disable)
 MIGRATE_PATH = internal/adapters/database/migrations/sql
+
+loadtest:
+	./scripts/loadtest/reset.sh
+	go run ./scripts/loadtest -n $(or $(N),300) -c $(or $(C),80)
 
 dev:
 	if [ ! -f .env ]; then cp .env.example .env; fi;

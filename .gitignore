@@ -58,3 +58,6 @@ secrets/
 PROJECT_ANALYSIS.md
 # Serena (local IDE assistant state)
 .serena/
+
+# Compiled load-test binary (build artifact of scripts/loadtest)
+/loadtest
