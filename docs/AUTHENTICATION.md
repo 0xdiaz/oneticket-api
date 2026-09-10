@@ -21,7 +21,7 @@ Authentication provides the following features:
 
 - ✅ User Registration
 - ✅ User Login
-- ✅ JWT Access Token (24 hours expiry)
+- ✅ JWT Access Token (15 minutes expiry, configurable)
 - ✅ Refresh Token Mechanism
 - ✅ Password Reset Flow
 - ✅ Token Rotation (security best practice)
@@ -141,8 +141,10 @@ User → POST /api/v1/auth/register → auth.Handler → auth.Service → auth.R
 - Refresh token stored in database (can be revoked)
 
 **Token Lifecycle:**
-- Access Token: 24 hours expiry (configurable)
-- Refresh Token: No expiry, but rotated on each use
+- Access Token: 15 minutes by default (`ACCESS_TOKEN_TTL_MINUTES`). Short on purpose: it is
+  stateless and cannot be revoked, so the TTL bounds how long it keeps working after logout.
+- Refresh Token: 7 days by default (`REFRESH_TOKEN_TTL_DAYS`), hashed at rest and rotated on
+  every use. Replaying a rotated token revokes the whole family.
 
 **Error responses:**
 - `400 Bad Request` — Missing or invalid refresh_token in body.
@@ -298,7 +300,7 @@ func (u *User) TableName() string { return "users" }
 - **Claims:**
   - `user_id`: User's database ID
   - `email`: User's email
-  - `exp`: Expiry timestamp (24 hours)
+  - `exp`: Expiry timestamp (15 minutes by default, `ACCESS_TOKEN_TTL_MINUTES`)
   - `iat`: Issued at timestamp
 - **Secret:** Environment variable `JWT_SECRET` (min 32 chars)
 - **Storage:** Client-side only (LocalStorage/Memory)

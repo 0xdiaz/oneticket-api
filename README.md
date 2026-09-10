@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🚀 Go Gin Enterprise Boilerplate
+# 🎟️ OneTicket API
 
-**Production-Ready Starter Kit for Building Scalable RESTful APIs**
+**Flash sale ticketing API, built on the Go + Gin enterprise boilerplate**
 
 [![Go Version](https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat&logo=go)](https://golang.org)
 [![Gin Framework](https://img.shields.io/badge/Gin-v1.11-00ADD8?style=flat)](https://github.com/gin-gonic/gin)
@@ -17,11 +17,20 @@
 
 ## 📖 What is This?
 
-**This is not just another boilerplate** - This is a **company-standard starter kit** designed to accelerate API development while maintaining high code quality, consistency, and best practices across all projects.
+A ticketing API for flash sales: a small number of tickets, a lot of people clicking at the
+same moment. Events and their ticket inventory are modelled here; the checkout path is
+deliberately not implemented yet.
+
+It is built on [`0xdiaz/gin-boilerplate`](https://github.com/0xdiaz/gin-boilerplate) and keeps
+that foundation intact — JWT auth, layered architecture, versioned migrations, observability,
+and the documentation set under [`docs/`](docs/).
 
 ### 🎯 Purpose
 
-This boilerplate serves as the **foundation for all Go API projects** in our organization. It eliminates the need to set up authentication, database connections, testing infrastructure, and project structure from scratch for every new project.
+This repository is the working codebase for a live sharing session on agentic AI-driven
+development — see [`docs/DEMO_RUNSHEET.md`](docs/DEMO_RUNSHEET.md). The ticketing domain was
+chosen because a naive checkout genuinely oversells under concurrency, which makes the bug
+real rather than staged.
 
 ### 💡 Why This Boilerplate?
 
@@ -84,8 +93,8 @@ Start your next API project with:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/go-gin-boilerplate.git
-cd go-gin-boilerplate
+git clone https://github.com/0xdiaz/oneticket-api.git
+cd oneticket-api
 
 # 2. Copy environment file
 cp .env.example .env
@@ -262,19 +271,21 @@ project/
 │   │   ├── dto/               # Data Transfer Objects
 │   │   ├── middlewares/       # Gin middlewares (auth, CORS, rate limit, metrics)
 │   │   ├── routers/           # One file per feature; index.go registers only
-│   │   │   ├── index.go       # Calls Register*Routes only
+│   │   │   ├── index.go       # Builds repos + services, calls Register*Routes
 │   │   │   ├── health_routes.go
 │   │   │   ├── auth_routes.go
+│   │   │   ├── event_routes.go
 │   │   │   └── example_routes.go
 │   │   └── services/          # Business logic; split features in subfolders
 │   │       ├── auth/          # Auth service (split → subfolder, package auth)
 │   │       │   ├── auth_service.go
 │   │       │   └── auth_service_tokens.go
 │   │       ├── health_service.go
+│   │       ├── event_service.go
 │   │       └── example_service.go
 │   └── domain/
-│       ├── models/            # Database entities (GORM)
-│       └── repositories/      # Data access layer (function-based CRUD)
+│       ├── models/            # Database entities (GORM), e.g. event_model.go, ticket_model.go
+│       └── repositories/      # Data access: exported interface + unexported impl + New*Repository()
 ├── pkg/                       # Public reusable packages
 │   ├── config/               # Configuration management
 │   ├── logger/               # Logging infrastructure
@@ -287,6 +298,7 @@ project/
 ├── tests/                    # ALL tests go here (not co-located)
 │   ├── unit/                 # Unit tests (controllers, services, middlewares)
 │   ├── integration/          # API and database integration tests
+│   ├── mocks/                # Shared in-memory fakes for the repository interfaces
 │   └── fixtures/             # Test data (JSON, etc.)
 ├── docs/                     # Documentation (standards, patterns, audits)
 ├── scripts/                  # Porting and maintenance scripts
@@ -492,7 +504,11 @@ Authorization: Bearer <your-jwt-token>
 
 - `GET /health` - Health check endpoint (returns database status, uptime)
 - `GET /metrics` - Metrics endpoint (request counters, error rates, uptime)
+- `GET /api/v1/events` - List events with live ticket availability
+- `GET /api/v1/events/:id` - Single event with live ticket availability
 - `GET /api/v1/datatables` - DataTables example with pagination/search
+
+Ticket purchase is not implemented yet — see [`docs/DEMO_RUNSHEET.md`](docs/DEMO_RUNSHEET.md).
 
 **Standard Response Format:**
 ```json
@@ -660,7 +676,9 @@ MASTER_DB_HOST=postgres_db
 JWT_SECRET=your-jwt-secret-key-min-32-characters
 ```
 
-- Token expiry: 24 hours (configurable in `auth_service.go`)
+- Access token expiry: 15 minutes (`ACCESS_TOKEN_TTL_MINUTES`). Kept short because access
+  tokens are stateless and cannot be revoked — logout only revokes refresh tokens.
+- Refresh token expiry: 7 days (`REFRESH_TOKEN_TTL_DAYS`), hashed at rest and rotated on use.
 - Algorithm: HS256
 - Claims: user_id, email, exp, iat
 
@@ -670,19 +688,40 @@ JWT_SECRET=your-jwt-secret-key-min-32-characters
 
 ### Development with Live Reload
 
-```bash
-# Start development environment
-make dev
+Two supported ways to run locally. **Config is read from the `.env` file** (viper reads the
+file directly — process environment variables do not override it), so the database host in
+`.env` decides which mode you are in.
 
-# This starts:
-# - PostgreSQL database (port 5432)
-# - PG Admin (port 5050)
-# - Go API with live reload (port 8000)
+**A. Database in Docker, API on the host** (what the demo uses — fastest feedback loop)
+
+```bash
+# .env: MASTER_DB_HOST=localhost   MASTER_DB_PORT=5436
+docker compose --env-file .env -f .docker/docker-compose-dev.yml up -d postgres_db
+go run main.go
 ```
+
+**B. Everything in Docker** (hot reload via air)
+
+```bash
+# .env: MASTER_DB_HOST=postgres_db   MASTER_DB_PORT=5432
+make dev
+```
+
+`--env-file .env` is required because the compose files live in `.docker/` — without it the
+`${MASTER_DB_*}` interpolation resolves to empty strings. `make dev` already passes it.
+
+Host ports and container names are scoped to this project (`oneticket_pg_db`,
+`oneticket_pgadmin`, `oneticket_dev_go_server`) so it can run alongside other services built
+from the same boilerplate.
+
+**Services started:**
+- PostgreSQL — host port `5436` → container `5432`
+- PG Admin — host port `5051`
+- Go API with live reload — port `8000` (mode B only)
 
 **Access Services:**
 - API: [http://localhost:8000](http://localhost:8000)
-- PG Admin: [http://localhost:5050](http://localhost:5050)
+- PG Admin: [http://localhost:5051](http://localhost:5051)
   - Email: `admin@admin.com`
   - Password: `root`
   - DB Host: `postgres_db`
@@ -710,24 +749,29 @@ make clean
 
 ## 🗄️ Database Migrations
 
-### Development Approach
+### One approach, every environment
 
-Uses GORM AutoMigrate for quick iteration:
+Schema changes are **versioned SQL files** applied by `golang-migrate`. There is no
+AutoMigrate: GORM models are used for querying only.
 
-```go
-// internal/adapters/database/migrations/migration.go
-func Migrate() {
-    models := []interface{}{
-        &models.User{},
-        // Add your models here
-    }
-    database.DB.AutoMigrate(models...)
-}
+`migrations.Migrate()` runs on every startup from `main.go` and is **fatal on failure**, so
+the server never serves requests against a half-migrated schema. See
+[`docs/MIGRATIONS.md`](docs/MIGRATIONS.md) for the full workflow.
+
+```
+internal/adapters/database/migrations/sql/
+  000001_create_users_table.up.sql / .down.sql
+  ...
+  000005_create_events_table.up.sql / .down.sql
+  000006_create_tickets_table.up.sql / .down.sql
 ```
 
-### Production Approach
+Every `.up.sql` ships with its `.down.sql`, and an applied migration is never edited — add a
+new pair instead.
 
-Uses SQL migration files with `golang-migrate`:
+### Running migrations by hand
+
+The same files can be driven with the `golang-migrate` CLI:
 
 ```bash
 # Install golang-migrate
@@ -904,8 +948,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 💬 Support
 
 **Issues & Questions:**
-- 🐛 [Report Bug](https://github.com/your-org/go-gin-boilerplate/issues)
-- 💡 [Request Feature](https://github.com/your-org/go-gin-boilerplate/issues)
+- 🐛 [Report Bug](https://github.com/0xdiaz/oneticket-api/issues)
+- 💡 [Request Feature](https://github.com/0xdiaz/oneticket-api/issues)
 - 📖 [Read Documentation](docs/README.md)
 
 **Resources:**

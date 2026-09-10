@@ -1227,7 +1227,7 @@ PROTECTED route (middlewares.AuthMiddleware(authService) guard):
 3. [Service.Login]
    • userRepo.GetUserByEmail(email)
    • bcrypt.CompareHashAndPassword(...)        (invalid → ErrInvalidCredentials)
-   • generateToken(user)                        (signed JWT, user_id + email, 24h)
+   • generateToken(user)                        (signed JWT, user_id + email, 15m default)
    • generateRefreshToken()                     (32 random bytes → hex)
    • userRepo.UpdateUser(user)                  (persist refresh token)
    • return *AuthResponse{User, AccessToken, RefreshToken, TokenType:"Bearer"}

@@ -44,6 +44,13 @@ services:
     restart: always
     env_file:
       - ../.env
+    # NOTE: config is read from the .env FILE by viper (config.SetupConfig), not from the
+    # process environment, and ../.. is mounted at /app — so this container reads the same
+    # ../.env as the host. Setting `environment:` here has no effect on the app config.
+    # To run the API in Docker, point ../.env at the compose service:
+    #   MASTER_DB_HOST=postgres_db   MASTER_DB_PORT=5432
+    # To run it on the host with `go run main.go`, point it at the published port:
+    #   MASTER_DB_HOST=localhost     MASTER_DB_PORT=5436
 
 volumes:
   oneticket_postgres_data:
