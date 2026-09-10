@@ -4,8 +4,10 @@ Pertanyaan yang benar-benar muncul saat `/ce-brainstorm` dan `/ce-plan` dijalank
 pada 2026-09-11, beserta jawabannya. **Bacakan, jangan pikirkan.** Memikirkan
 keputusan produk sambil bicara adalah cara tercepat melewati time box.
 
-Parasut: `git checkout demo/plan-ready` — sudah berisi
-`docs/plans/2026-09-11-001-feat-checkout-plan.md` versi jadi.
+Parasut: `git checkout demo/plan-ready` — sudah berisi kedua artefaknya:
+
+- `docs/brainstorm/2026-09-11-checkout-requirements.md` — apa yang dibangun
+- `docs/plans/2026-09-11-001-feat-checkout-plan.md` — bagaimana membangunnya
 
 ---
 

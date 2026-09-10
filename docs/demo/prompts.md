@@ -47,6 +47,9 @@ pembayaran, hold sementara, beli lebih dari satu tiket sekali jalan.
 
 Batasi ke maksimal 5 pertanyaan, tanyakan sekaligus dalam satu giliran, dan hanya
 untuk tiga poin di atas. Target: satu story yang selesai dalam satu sesi.
+
+Simpan hasilnya ke docs/brainstorm/ sebagai dokumen requirement — apa yang
+dibangun saja, tanpa rencana implementasi. Rencana implementasi urusan ce-plan.
 ```
 
 **Kalau agent menawarkan scope di luar daftar, tolak di tempat.** Refund itu story
@@ -57,7 +60,13 @@ kedua — justru bukti compounding-nya nanti.
 ## [2] `/ce-plan` — time box 15 menit
 
 ```
-/ce-plan Buat planning dari brainstorm barusan. Simpan ke docs/plans/checkout.md.
+/ce-plan Buat planning dari dokumen requirement di docs/brainstorm/ barusan.
+Simpan ke docs/plans/.
+
+Jangan salin ulang requirement, aktor, flow, atau acceptance example ke dalam
+plan — rujuk lewat ID dan sertakan tabel Requirements Trace yang memetakan tiap
+R-ID ke unit yang memenuhinya dan test yang membuktikannya. Dua salinan
+requirement akan saling menyimpang.
 
 Karena ini TDD, plan harus menempatkan task penulisan test SEBELUM task
 implementasi, dan menyebut setiap test-nya satu per satu — bukan "tulis test"

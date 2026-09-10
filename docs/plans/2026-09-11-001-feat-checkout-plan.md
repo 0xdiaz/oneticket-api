@@ -2,6 +2,7 @@
 artifact_contract: ce-unified-plan/v1
 artifact_readiness: implementation-ready
 product_contract_source: ce-brainstorm
+origin: docs/brainstorm/2026-09-11-checkout-requirements.md
 execution: code
 date: 2026-09-11
 topic: checkout tiket flash sale
@@ -9,111 +10,35 @@ topic: checkout tiket flash sale
 
 # Checkout Tiket - Plan
 
-**Product Contract preservation:** Product Contract tidak berubah. Semua R-ID, KD-ID,
-dan AE-ID dipertahankan apa adanya. Enrichment hanya menambah Planning Contract,
-Implementation Units, Verification Contract, dan Definition of Done.
+Dokumen ini menjawab **bagaimana** membangunnya. **Apa** yang dibangun ada di
+[`docs/brainstorm/2026-09-11-checkout-requirements.md`](../brainstorm/2026-09-11-checkout-requirements.md).
 
-## Goal Capsule
+Requirement, aktor, flow, acceptance example, dan keputusan produk tidak
+disalin ke sini — dirujuk lewat ID supaya tidak ada dua salinan yang bisa
+saling menyimpang. Baca origin dulu, lalu dokumen ini.
 
-**Objective.** User yang sudah login bisa membeli satu tiket untuk satu event.
-Satu tiket diambil dari stok yang tersedia dan menjadi miliknya, dengan catatan
-transaksi yang bisa dilacak.
-
-**Product authority.** Keputusan produk di dokumen ini sudah final. Yang belum
-diputuskan hanya mekanisme teknis pengambilan tiket — itu sengaja diserahkan ke
-implementasi, dengan syarat memenuhi acceptance criteria di bawah.
-
-**Open blockers.** Tidak ada.
+**Product Contract preservation:** tidak berubah. Semua R-ID, KD-ID, dan AE-ID
+dipakai apa adanya dari origin.
 
 ---
 
-## Product Contract
+## Requirements Trace
 
-### Masalah
+Setiap requirement di origin harus punya unit yang memenuhinya dan test yang
+membuktikannya. Kalau ada baris tanpa unit, plan-nya belum lengkap.
 
-Event dan tiketnya sudah bisa dilihat (`GET /api/v1/events`, `/events/:id`), tapi
-tidak ada cara membelinya. Tanpa checkout, inventaris tiket tidak pernah berubah
-dan produk belum melakukan apa pun yang bernilai.
-
-Konteks yang membentuk masalah ini: flash sale. Sejumlah kecil tiket, banyak orang
-menekan tombol pada detik yang sama.
-
-### Aktor
-
-**A1. Pembeli** — user terdaftar yang sudah login. User id tersedia di gin context
-lewat `AuthMiddleware`. Tidak ada aktor lain di scope ini.
-
-### Requirements
-
-**R1.** Pembeli yang terautentikasi dapat membeli satu tiket untuk satu event.
-
-**R2.** Tiket yang dibeli berpindah dari `available` ke `sold` dan terikat pada
-pembelinya.
-
-**R3.** Setiap pembelian menghasilkan catatan transaksi yang menyimpan siapa
-membeli tiket mana, untuk event apa, dan berapa harganya saat itu.
-
-**R4.** Harga pada catatan transaksi dibekukan saat pembelian. Perubahan harga
-event setelahnya tidak mengubah transaksi yang sudah terjadi.
-
-**R5.** Ketika tidak ada lagi tiket `available`, pembelian ditolak dengan
-`409 Conflict`.
-
-**R6.** Permintaan tanpa autentikasi ditolak dengan `401`.
-
-**R7.** Permintaan untuk event yang tidak ada ditolak dengan `404`.
-
-**R8. Tidak boleh terjadi oversell.** Di bawah pembelian yang bersamaan, jumlah
-tiket terjual tidak pernah melebihi inventaris, dan satu tiket tidak pernah
-menjadi milik lebih dari satu pembeli.
-
-> R8 adalah kriteria hasil, **bukan** resep. Dokumen ini sengaja tidak menyebut
-> mekanisme apa pun untuk memenuhinya — itu keputusan implementasi. Yang
-> mengikat adalah testnya (U7), bukan caranya.
-
-### Key Decisions
-
-**KD1 — Kepemilikan dicatat di tabel `orders` terpisah.** Governs R3, R4.
-Bukan kolom tambahan di `tickets`. Alasannya: transaksi butuh harga saat beli
-(R4), yang tidak punya tempat di baris tiket; dan catatan transaksi yang berdiri
-sendiri membuat refund bisa dibangun tanpa membongkar model ini.
-
-**KD2 — Stok habis dijawab `409 Conflict`.** Governs R5.
-Konsisten dengan pola error yang sudah ada di repo (`ErrEmailAlreadyExists` juga
-409) dan bisa memakai `utils.Conflict` yang sudah tersedia.
-
-**KD3 — Mekanisme konkurensi tidak ditentukan di sini.** Governs R8.
-Menuliskan mekanismenya berarti memutuskan hal teknis di dokumen requirement,
-sementara yang benar-benar harus dijamin adalah perilakunya.
-
-### Flow
-
-```
-F1. Pembeli (terautentikasi)
-  -> POST /api/v1/events/{id}/purchase
-      -> event ada?                tidak -> 404
-      -> ada tiket available?      tidak -> 409
-      -> ambil satu tiket, tandai sold, catat order
-  -> 201 Created + detail tiket & order
-```
-
-### Acceptance Examples
-
-| # | Kondisi | Hasil |
+| Requirement (origin) | Dipenuhi oleh | Dibuktikan oleh |
 |---|---|---|
-| AE1 | Event punya 100 tiket, pembeli terautentikasi membeli | `201`, tiket jadi `sold`, satu baris `orders` terbentuk |
-| AE2 | Semua tiket sudah `sold` | `409`, tidak ada baris `orders` baru |
-| AE3 | Tanpa token | `401` |
-| AE4 | Event id tidak dikenal | `404` |
-| AE5 | Harga event diubah setelah pembelian | Harga di `orders` tidak ikut berubah |
-| AE6 | 300 pembelian bersamaan atas 100 tiket | Tepat 100 sukses, 200 ditolak `409`, tidak ada tiket dengan lebih dari satu pemilik |
+| R1 — pembeli terautentikasi bisa beli satu tiket | U5, U6 | U3, U8 (AE1) |
+| R2 — tiket pindah ke `sold` dan terikat pembeli | U4 | U4, U8 |
+| R3 — setiap pembelian menghasilkan catatan transaksi | U1, U4 | U1, U4 |
+| R4 — harga dibekukan saat pembelian | U5 | U3, U8 (AE5) |
+| R5 — stok habis → `409` | U5, U6 | U3, U6, U8 (AE2) |
+| R6 — tanpa autentikasi → `401` | U6 | U6, U8 (AE3) |
+| R7 — event tidak ada → `404` | U5, U6 | U3, U6, U8 (AE4) |
+| R8 — tidak boleh oversell | U4 (mekanisme bebas) | **U7** (AE6) |
 
-### Out of Scope
-
-Refund, waiting list, seat map, pembayaran, hold/reservasi sementara, pembelian
-lebih dari satu tiket dalam satu permintaan, pemilihan kursi.
-
-Refund akan dibangun sebagai story terpisah setelah ini.
+Keputusan produk yang punya konsekuensi teknis: KD1 → KTD1, KD2 → U6, KD3 → KTD3.
 
 ---
 
