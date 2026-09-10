@@ -59,6 +59,10 @@ kedua — justru bukti compounding-nya nanti.
 ```
 /ce-plan Buat planning dari brainstorm barusan. Simpan ke docs/plans/checkout.md.
 
+Karena ini TDD, plan harus menempatkan task penulisan test SEBELUM task
+implementasi, dan menyebut setiap test-nya satu per satu — bukan "tulis test"
+sebagai satu task gelondongan.
+
 Atur tasknya agar bisa dikerjakan paralel pakai task Claude Code. Jangan ada code
 yang duplicate atau redundant — kalau dua task menyentuh file yang sama, gabungkan
 atau beri urutan yang jelas.
@@ -68,8 +72,39 @@ Plan harus menyebut eksplisit:
 - Bagaimana kepemilikan tiket dimodelkan.
 - Titik mana yang menulis ke database, lewat repository yang mana.
 - Perubahan di api/openapi.yaml.
-- Daftar test beserta kategorinya (positive / negative / edge), termasuk satu
-  integration test konkuren yang membuktikan tidak ada oversell.
+- Daftar test lengkap beserta kategorinya, mengikuti konvensi di bawah.
+
+KONVENSI TEST — plan harus patuh ini:
+
+Penamaan: describe method -> describe positive/negative/edge case -> test.
+
+Unit test:
+- Lokasi tests/unit/<layer>/, package <layer>_test (black box).
+- Isolated ala London school: pakai fake dari tests/mocks/, tidak menyentuh DB.
+- Fake wajib punya assertion var _ repositories.XRepository = (*MockX)(nil).
+
+Integration test:
+- Lokasi tests/integration/, harus ada full flow.
+- Pakai Testcontainers: Postgres asli di container, migrasi dijalankan ke
+  container itu, lalu test jalan di atasnya.
+- DB tidak boleh di-mock. Pihak ketiga (kalau nanti ada) semua di-mock.
+- Container dibagi satu per package lewat TestMain, jangan satu container per
+  test — itu yang bikin lewat budget waktu.
+- Harus jalan dengan `go test ./tests/integration/...` tanpa setup manual dan
+  tanpa env var. Pattern lama yang membaca TEST_DB_MASTER_DSN lalu t.Skip boleh
+  tetap ada untuk test yang sudah ada, tapi jangan dipakai untuk yang baru.
+
+Negative test harus mencakup semua logic validasi.
+
+Karena ada logic keuangan (price_cents int64), sertakan test precision loss dan
+rounding error. Uang tidak boleh pernah jadi float di jalur mana pun.
+
+Wajib ada satu integration test konkuren: N goroutine membeli bersamaan dari
+inventaris terbatas, assert tidak ada oversell dan tidak ada tiket yang terjual
+dua kali. Dijalankan dengan -race.
+
+Seluruh suite tidak boleh lebih dari 3 menit. Kalau perkiraannya lewat, sebutkan
+di plan cara menekannya.
 
 Jangan tanya lagi hal yang sudah dijawab di brainstorm.
 ```
@@ -81,10 +116,12 @@ Jangan tanya lagi hal yang sudah dijawab di brainstorm.
 ```
 /ce-work mode:return-to-caller docs/plans/checkout.md
 
-Kerjakan paralel sesuai plan. Commit kecil-kecil agar mudah direview. Jalankan
-gofmt, go vet, dan go build sebelum tiap commit. Verifikasi dengan menjalankan
-test. Kalau ada issue, perbaiki. Di akhir jalankan semua test agar tidak ada
-regresi.
+Kerjakan paralel sesuai plan, dan pertahankan urutan TDD: test ditulis dan
+dilihat gagal dulu, baru implementasinya.
+
+Commit kecil-kecil agar mudah direview. Jalankan gofmt, go vet, dan go build
+sebelum tiap commit. Verifikasi dengan menjalankan test. Kalau ada issue,
+perbaiki. Di akhir jalankan semua test dengan -race agar tidak ada regresi.
 ```
 
 `mode:return-to-caller` menahan *shipping tail*-nya — tanpa itu `ce-work` bisa
@@ -158,52 +195,19 @@ Segmen yang menutup argumen. Jangan potong.
 terjual dikembalikan ke status available, dan hanya pembelinya yang boleh
 melakukannya.
 
-Sebelum mulai, baca docs/solutions/.
+Sebelum mulai, baca docs/solutions/ dan test yang baru ditulis untuk checkout —
+ikuti konvensi yang sama persis dari situ.
 
-Ikuti konvensi test yang sama: positive, negative, edge case, plus satu test
-konkuren. Commit kecil-kecil.
+TDD: test dulu sampai gagal, baru implementasi. Wajib ada positive, negative
+untuk seluruh logic validasi, edge case, dan satu integration test konkuren
+dengan -race.
+
+Commit kecil-kecil.
 ```
 
 Yang ditunggu: agent memakai pola locking dari story pertama **tanpa disuruh**. Kalau
 itu terjadi, tunjukkan barisnya dan bandingkan dengan entri di `docs/solutions/`. Itu
 takeaway-nya.
-
----
-
-## Konvensi test (sisipkan kalau agent menyimpang)
-
-```
-Konvensi test di repo ini:
-
-Penamaan: describe method -> describe positive/negative/edge case -> test.
-
-Unit test:
-- Lokasi tests/unit/<layer>/, package <layer>_test (black box).
-- Isolated ala London school: pakai fake dari tests/mocks/, tidak menyentuh DB.
-- Fake wajib punya assertion var _ repositories.XRepository = (*MockX)(nil).
-
-Integration test:
-- Lokasi tests/integration/, harus ada full flow.
-- Pakai Testcontainers untuk deploy stack-nya: Postgres asli di container,
-  migrasi dijalankan ke container itu, lalu test jalan di atasnya.
-- DB tidak boleh di-mock. Pihak ketiga (kalau nanti ada) semua di-mock.
-- Container dibagi satu per package lewat TestMain, jangan satu container per
-  test — itu yang bikin lewat budget waktu.
-- Test harus jalan dengan `go test ./tests/integration/...` tanpa setup manual
-  dan tanpa env var. Pattern lama yang membaca TEST_DB_MASTER_DSN lalu t.Skip
-  boleh tetap ada untuk test yang sudah ada, tapi jangan dipakai untuk yang baru.
-
-Negative test harus mencakup semua logic validasi.
-
-Karena ada logic keuangan (price_cents int64), lakukan test precision loss dan
-rounding error. Uang tidak boleh pernah jadi float di jalur mana pun.
-
-Wajib ada satu test konkuren: N goroutine membeli bersamaan dari inventaris
-terbatas, assert tidak ada oversell dan tidak ada tiket yang terjual dua kali.
-Jalankan dengan -race.
-
-Semua test tidak boleh lebih dari 3 menit total. Optimize kalau lewat.
-```
 
 ---
 
