@@ -134,25 +134,46 @@ commit/push/PR sendiri di tengah demo.
 
 ---
 
-## [4] Puncak — load test, 15 menit
+## [4] Puncak — dua ukuran, 15 menit
 
-Tiga perintah, satu per satu. **Jangan** pakai `make loadtest`: exit code-nya adalah
-vonis, jadi make menambahkan baris `make: *** Error 1` tepat setelah vonis muncul dan
-itu merusak momennya.
+Dua alat, dua pelajaran. Jalankan berurutan.
+
+### 4a. Load test — bug yang *dicegah* konteks
 
 ```bash
 ./scripts/loadtest/reset.sh
 go run ./scripts/loadtest -n 300 -c 80
 ```
 
-Setelah angkanya muncul:
+Hasil yang diharapkan: `AMAN — terjual 100 dari 100 tiket`. Katakan apa adanya:
+race condition klasik ini tidak terjadi karena plan menyebut transaksi, unique
+constraint, dan test konkuren. Konteks yang menyiapkannya.
+
+### 4b. Query probe — bug yang *lolos semua test*
+
+```bash
+go run ./scripts/nplusone
+```
+
+Hasil yang diharapkan: `200 event -> 202 query`. Sebelum lanjut, tunjukkan
+bahwa seluruh test hijau:
+
+```bash
+go test ./tests/... 2>&1 | tail -6
+```
+
+Itu poinnya: hasilnya benar, cuma mahal. Tidak ada assertion yang gagal.
+
+Lalu:
 
 ```
-/ce-debug Load test barusan menjual 300 tiket dari inventaris 100, dan beberapa
-kode tiket terjual ke lebih dari satu pembeli.
+/ce-debug Satu panggilan GET /api/v1/events menghabiskan 202 query untuk 200
+event — satu query tambahan per baris. Seluruh test hijau, jadi ini tidak
+tertangkap apa pun.
 
 Ikuti alur ini, jangan langsung lompat ke perbaikan:
-1. Reproduce — tulis test otomatis yang gagal dan membuktikan bugnya. Merah dulu.
+1. Reproduce — tulis test otomatis yang gagal dan membuktikan biayanya, bukan
+   kebenarannya. Merah dulu.
 2. Root analysis — jelaskan penyebabnya, bukan gejalanya.
 3. Prioritas — kalau ketemu lebih dari satu masalah, urutkan berdasarkan dampak.
 4. Rekomendasi — sebutkan opsi perbaikan beserta trade-off-nya sebelum memilih.
@@ -165,9 +186,10 @@ iterasi, jalankan hanya test itu (-run), bukan seluruh suite.
 Setelah fix:
 
 ```bash
-./scripts/loadtest/reset.sh
-go run ./scripts/loadtest -n 300 -c 80
+go run ./scripts/nplusone
 ```
+
+Target: `AMAN — query tetap 2 meski event naik dari 10 ke 200`.
 
 ---
 

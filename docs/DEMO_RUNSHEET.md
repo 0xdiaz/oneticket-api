@@ -98,7 +98,7 @@ tolak di tempat — refund adalah story kedua, dan itu justru buktinya nanti.
 | 00:16 | 12' | 🎬 **`/ce-brainstorm`** — live, time box keras | ❌ lo jawab agent |
 | 00:28 | 15' | 🎬 **`/ce-plan`** — live, menghasilkan `docs/plans/checkout.md` | ❌ lo jawab agent |
 | 00:43 | 22' | 🎬 **`/ce-work docs/plans/checkout.md`** — agent implement | ✅ **jendela besar** |
-| 01:05 | 15' | 🎬 **Puncak** — load test → `OVERSELL 300/100` → `/ce-debug` → fix → `100/100` | sedikit |
+| 01:05 | 15' | 🎬 **Puncak** — query probe → `202 query` → `/ce-debug` → fix → `2 query` | sedikit |
 | 01:20 | 10' | 🎬 **`/ce-code-review`** — fan-out persona paralel | ✅ **jendela** |
 | 01:30 | 7' | 🎬 **`/ce-compound`** — learning masuk `docs/solutions/` | — |
 | 01:37 | 13' | 🎬 **Story kedua (refund)** — agent pakai pola locking tanpa disuruh | ✅ **jendela** |
@@ -136,14 +136,28 @@ Itu tool buat ditinggal semalaman. Sekali diketik, kendali atas jam dinding hila
 
 ```
 ce-work jalan mulus     → "oh, bisa nulis kode"          (belum meyakinkan)
-Oversell 300/100        → "nah, tetep bisa salah kan"    (skeptis menang)
+Load test AMAN 100/100  → "konteks bagus mencegah bug"   (poin pertama)
+Query probe 202 query   → "tapi ada yang lolos semua"    (skeptis menang)
 ce-debug diagnosa+fix   → "...oke ini beda"              (skeptis goyah)
 ce-compound catat       → "jadi nggak ngulang"           (paham mekanismenya)
 Story 2 pakai pola      → "ini yang namanya compounding" (takeaway kebawa pulang)
 ```
 
-Skeptis di ruangan **harus dikasih menang dulu** di menit 65. Kalau semuanya mulus dari
-awal, mereka pulang dengan pikiran "ah, demo-nya diatur".
+**Dua bug, dua pelajaran berbeda — dan ini yang bikin arc-nya kuat:**
+
+Race condition **dicegah** oleh plan yang bagus. Ini sudah diverifikasi lewat dry run:
+dengan plan yang menyebut transaksi, `UNIQUE (ticket_id)`, dan test konkuren, agent
+menulis `SKIP LOCKED` di percobaan pertama. Load test balas `AMAN — 100 dari 100`.
+Tunjukkan ini, dan bilang apa adanya: *"bug klasik ini tidak terjadi, karena
+konteksnya menyiapkannya."*
+
+N+1 **tidak dicegah apa pun** — dan lolos seluruh test suite. Hasilnya benar, cuma
+mahal. Tidak ada assertion yang gagal, tidak ada yang merah. Itu yang membuatnya
+jadi puncak: penonton baru saja melihat konteks bagus mencegah satu bug, lalu
+melihat bug lain lolos justru karena semua test hijau.
+
+Skeptis di ruangan **harus dikasih menang** di menit 65. Kalau semuanya mulus,
+mereka pulang dengan pikiran "ah, demo-nya diatur".
 
 ---
 
@@ -193,6 +207,8 @@ Siapkan **parking lot** — tulis di papan, jawab di segmen 01:50.
 - [ ] `curl localhost:8000/api/v1/events` sudah balas `available_tickets: 100`
 - [ ] `./scripts/loadtest/reset.sh` jalan, lalu `go run ./scripts/loadtest -n 300 -c 80`
       balas `BELUM ADA YANG TERJUAL` (404) — itu kondisi awal yang benar
+- [ ] `go run ./scripts/nplusone` balas `N+1 — query ikut tumbuh` dengan
+      `200 event -> 202 query`. Kalau balas AMAN, bugnya sudah keburu diperbaiki
 - [ ] `RATE_LIMIT_RPS=1000` di `.env` — di 100, rate limiter nolak duluan dan
       **oversell-nya nggak akan pernah muncul**
 - [ ] Testcontainers siap: `docker image inspect postgres:16-alpine` sukses, dan
@@ -233,7 +249,8 @@ Siapkan **parking lot** — tulis di papan, jawab di segmen 01:50.
 |---|---|
 | Internet mati | Video cadangan, narasikan langsung |
 | Agent stuck > 3 attempt | `git checkout demo/final`, bahas kenapa gagal |
-| Load test nggak nunjukkan oversell | Naikkan `-n` dan `-c`, cek `RATE_LIMIT_RPS`, atau tambah `time.Sleep` di service (dan **bilang** ke audiens kalau lo lakuin itu) |
+| Query probe nggak nunjukkan N+1 | Naikkan `-sizes`, mis. `10,500`. Kemiringannya yang penting, bukan angka absolutnya |
+| Load test justru oversell | Bagus — pakai itu sebagai puncak, N+1 jadi babak kedua |
 | `ce-code-review` kelamaan | Potong, lanjut ke `ce-compound` |
 | Kehabisan waktu | Potong `ce-code-review` dulu, baru buffer. Jangan potong story kedua |
 | Agent nge-fix duluan sebelum load test | Bagus — tunjukkan test-nya, bahas kenapa dia antisipasi |
