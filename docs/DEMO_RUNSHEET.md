@@ -25,10 +25,38 @@ Ini yang menentukan seluruh struktur di bawah.
 | Jenis | Contoh | Bisa diisi Q&A? |
 |---|---|---|
 | **Agent kerja sendiri** | `ce-work`, `ce-code-review`, `ce-compound` | ✅ Ya — ini jendela Q&A-nya |
-| **Agent nanya balik** | `ce-brainstorm`, `ce-plan` | ❌ Tidak — lo harus jawab agent, bukan audiens |
+| **Agent nanya balik** | `ce-brainstorm`, `ce-plan` | ❌ Tidak — lo yang harus jawab |
 
-Karena itu planning **tetap di-pre-bake meski waktu cukup**. Menjalankan `ce-plan` live
-bukan menghemat apa-apa: audiens cuma nonton lo ngobrol sama terminal.
+Planning dijalankan **live** di sesi ini. Nilainya: audiens melihat *pertanyaan apa yang
+diajukan agent yang bagus* — itu konten, bukan waktu kosong. Tapi jenis nunggunya beda:
+selama dua segmen itu lo sedang menjawab agent, bukan menjawab audiens. Jangan hitung
+keduanya sebagai jendela Q&A, dan **kunci durasinya** (lihat di bawah).
+
+---
+
+## Mengunci durasi planning live
+
+Tanpa ini, dua segmen planning bisa memakan setengah sesi.
+
+**1. Seed prompt yang sudah rapat, bukan pertanyaan terbuka.**
+Jangan mulai dari "bantu gue brainstorm fitur ticketing". Batasan yang sudah diketahui
+disebutkan di depan supaya elicitation-nya pendek. Prompt siap paste ada di
+`docs/demo/prompts.md`.
+
+**2. Jawaban sudah diputuskan sebelum naik panggung.**
+Momen terburuk di panggung adalah presenter memikirkan keputusan produk sambil bicara —
+lambat, dan terlihat ragu. Dari dry run, catat setiap pertanyaan yang muncul dan tulis
+jawabannya satu kalimat. Bacakan, jangan pikirkan.
+
+**3. Time box keras + parasut.**
+`ce-brainstorm` 12 menit, `ce-plan` 15 menit. Lewat itu: hentikan, `git checkout
+demo/plan-ready` yang sudah berisi artefak jadi, bilang apa adanya ("ini yang tadi mau
+dia hasilkan, gue potong biar kita sempat lihat bagian implementasinya"), lanjut.
+Audiens tidak akan keberatan; kehabisan waktu di menit 90 jauh lebih mahal.
+
+**4. Jangan biarkan agent memilih ruang lingkup.**
+Checkout saja. Kalau brainstorm mulai menawarkan refund, waiting list, atau seat map,
+tolak di tempat — refund adalah story kedua, dan itu justru buktinya nanti.
 
 ---
 
@@ -36,19 +64,24 @@ bukan menghemat apa-apa: audiens cuma nonton lo ngobrol sama terminal.
 
 | Waktu | Durasi | Segmen | Q&A? |
 |---|---|---|---|
-| 00:00 | 10' | **Pembukaan + thesis** | — |
-| 00:10 | 10' | **Kondisi awal repo** — AI rules, doc yang sudah disamakan, test yang ada | — |
-| 00:20 | 8' | **Artefak planning** — hasil `ce-brainstorm` + `ce-plan` (pre-baked) | — |
-| 00:28 | 25' | 🎬 **`/ce-work docs/plans/checkout.md`** — agent implement checkout | ✅ **jendela besar** |
-| 00:53 | 15' | 🎬 **Puncak** — load test → `OVERSELL 300/100` → `/ce-debug` → fix → `100/100` | sedikit |
-| 01:08 | 12' | 🎬 **`/ce-code-review`** — fan-out persona paralel + peer cross-model | ✅ **jendela** |
-| 01:20 | 8' | 🎬 **`/ce-compound`** — learning masuk `docs/solutions/` | — |
-| 01:28 | 15' | 🎬 **Story kedua (refund)** — agent pakai pola locking tanpa disuruh | ✅ **jendela** |
-| 01:43 | 12' | **Takeaway + Q&A terbuka** | ✅ |
-| 01:55 | 5' | **Buffer** | — |
+| 00:00 | 8' | **Pembukaan + thesis** | — |
+| 00:08 | 8' | **Kondisi awal repo** — AI rules, doc yang sudah disamakan, test yang ada | — |
+| 00:16 | 12' | 🎬 **`/ce-brainstorm`** — live, time box keras | ❌ lo jawab agent |
+| 00:28 | 15' | 🎬 **`/ce-plan`** — live, menghasilkan `docs/plans/checkout.md` | ❌ lo jawab agent |
+| 00:43 | 22' | 🎬 **`/ce-work docs/plans/checkout.md`** — agent implement | ✅ **jendela besar** |
+| 01:05 | 15' | 🎬 **Puncak** — load test → `OVERSELL 300/100` → `/ce-debug` → fix → `100/100` | sedikit |
+| 01:20 | 10' | 🎬 **`/ce-code-review`** — fan-out persona paralel | ✅ **jendela** |
+| 01:30 | 7' | 🎬 **`/ce-compound`** — learning masuk `docs/solutions/` | — |
+| 01:37 | 13' | 🎬 **Story kedua (refund)** — agent pakai pola locking tanpa disuruh | ✅ **jendela** |
+| 01:50 | 8' | **Takeaway + Q&A terbuka** | ✅ |
+| 01:58 | 2' | **Buffer** | — |
 
-**Total 115 menit + 5 buffer.** Kalau molor, yang dipotong `ce-code-review` — **bukan**
-segmen debug, dan **bukan** story kedua (itu thesis-nya).
+**Total 118 menit + 2 buffer.** Buffer-nya tipis karena planning sekarang live — itulah
+harga yang dibayar. Urutan potong kalau molor:
+
+1. `ce-code-review` (10') — sebut saja hasilnya, jangan dijalankan
+2. Segmen planning, lewat parasut `demo/plan-ready`
+3. **Jangan** potong segmen debug, **jangan** potong story kedua — dua itu tesisnya
 
 ---
 
@@ -75,7 +108,7 @@ ce-compound catat       → "jadi nggak ngulang"           (paham mekanismenya)
 Story 2 pakai pola      → "ini yang namanya compounding" (takeaway kebawa pulang)
 ```
 
-Skeptis di ruangan **harus dikasih menang dulu** di menit 53. Kalau semuanya mulus dari
+Skeptis di ruangan **harus dikasih menang dulu** di menit 65. Kalau semuanya mulus dari
 awal, mereka pulang dengan pikiran "ah, demo-nya diatur".
 
 ---
@@ -113,7 +146,7 @@ ngomong. Taruh terminal di layar yang kelihatan ekor mata lo, atau minta satu or
 kode isyarat waktu agent berhenti.
 
 **3. Ada pertanyaan yang butuh layar.** Itu ngerebut layar dari agent yang lagi jalan.
-Siapkan **parking lot** — tulis di papan, jawab di segmen 01:43.
+Siapkan **parking lot** — tulis di papan, jawab di segmen 01:50.
 
 ---
 
@@ -128,7 +161,9 @@ Siapkan **parking lot** — tulis di papan, jawab di segmen 01:43.
       balas `BELUM ADA YANG TERJUAL` (404) — itu kondisi awal yang benar
 - [ ] `RATE_LIMIT_RPS=1000` di `.env` — di 100, rate limiter nolak duluan dan
       **oversell-nya nggak akan pernah muncul**
-- [ ] Artefak `ce-brainstorm` + `ce-plan` sudah ada di `docs/plans/`
+- [ ] Seed prompt brainstorm + plan ada di `docs/demo/prompts.md`, tinggal paste
+- [ ] Daftar pertanyaan yang muncul saat dry run + jawaban satu kalimat masing-masing
+- [ ] Branch `demo/plan-ready` berisi `docs/plans/checkout.md` hasil dry run (parasut)
 - [ ] Semua prompt ada di file teks, tinggal paste — ngetik prompt live itu dead air
 - [ ] Branch parachute `demo/final` yang sudah jadi dan sudah diverifikasi
 - [ ] **Dry run persis sekali** dengan prompt yang sama, catat menitnya per segmen
@@ -166,6 +201,9 @@ Siapkan **parking lot** — tulis di papan, jawab di segmen 01:43.
 | Kehabisan waktu | Potong `ce-code-review` dulu, baru buffer. Jangan potong story kedua |
 | Agent nge-fix duluan sebelum load test | Bagus — tunjukkan test-nya, bahas kenapa dia antisipasi |
 | Nggak ada yang nanya di jendela Q&A | Pakai 4 pertanyaan pancingan di atas |
+| `ce-brainstorm`/`ce-plan` lewat time box | `git checkout demo/plan-ready`, bilang apa adanya, lanjut |
+| Brainstorm nawarin scope lain (refund, seat map) | Tolak di tempat — refund itu story kedua |
+| Agent nanya hal yang belum lo putuskan | Jawab dari daftar jawaban hasil dry run, jangan mikir di panggung |
 
 ---
 
