@@ -17,5 +17,8 @@ func Run() error {
 	if err := seedDemoExamples(); err != nil {
 		return fmt.Errorf("seed demo examples: %w", err)
 	}
+	if err := seedDemoEvent(); err != nil {
+		return fmt.Errorf("seed demo event: %w", err)
+	}
 	return nil
 }

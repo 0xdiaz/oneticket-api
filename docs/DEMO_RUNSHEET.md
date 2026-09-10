@@ -63,8 +63,10 @@ Untuk oversell, agent bisa fix pakai:
 ## Pre-flight checklist (H-1)
 
 - [ ] `go mod download` selesai — **jangan pernah nunggu download di depan orang**
-- [ ] Postgres jalan: `docker compose -f .docker/docker-compose-dev.yml up -d`
-- [ ] Migration keapply, seed data event + 100 tiket siap
+- [ ] Postgres jalan: `docker compose --env-file .env -f .docker/docker-compose-dev.yml up -d postgres_db`
+      (`--env-file` wajib — compose ada di `.docker/`, tanpa itu interpolasi `${MASTER_DB_*}` kosong)
+- [ ] `go run main.go` sekali: migration keapply, event "Flash Sale Demo" + 100 tiket ke-seed
+- [ ] `curl localhost:8000/api/v1/events` sudah balas `available_tickets: 100`
 - [ ] `go build ./... && go test ./tests/unit/...` hijau
 - [ ] Tool load test kepasang & udah dicoba (`hey`, `vegeta`, atau `k6`)
 - [ ] Semua prompt ada di `docs/demo/prompts.md`, tinggal paste — **jangan ngetik prompt live**

@@ -25,9 +25,13 @@ func RegisterRoutes(route *gin.Engine) {
 	refreshTokenRepo := repositories.NewRefreshTokenRepository()
 	authService := auth.NewAuthService(userRepo, refreshTokenRepo, nil)
 	exampleService := services.NewExampleService()
+	eventRepo := repositories.NewEventRepository()
+	ticketRepo := repositories.NewTicketRepository()
+	eventService := services.NewEventService(eventRepo, ticketRepo)
 
 	RegisterAuthRoutes(apiV1, authService)
 	RegisterExampleRoutes(apiV1, exampleService)
+	RegisterEventRoutes(apiV1, eventService)
 
 	// Protected routes (require authentication)
 	authController := controllers.NewAuthController(authService)

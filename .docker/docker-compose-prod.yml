@@ -2,7 +2,7 @@ name: oneticket
 
 services:
   postgres_db:
-    container_name: core_pg_db
+    container_name: oneticket_prod_pg_db
     image: postgres:13-alpine
     env_file:
       - ../.env
@@ -15,7 +15,7 @@ services:
     restart: always
 
   server:
-    container_name: go_server
+    container_name: oneticket_prod_go_server
     build:
       context: ..
       dockerfile: .docker/Dockerfile
