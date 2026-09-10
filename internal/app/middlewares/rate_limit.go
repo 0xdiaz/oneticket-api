@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/0xdiaz/tiketin-api/pkg/config"
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
-	"github.com/0xdiaz/tiketin-api/pkg/utils"
+	"github.com/0xdiaz/oneticket-api/pkg/config"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )

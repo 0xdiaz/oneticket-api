@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/dto"
-	"github.com/0xdiaz/tiketin-api/internal/domain/models"
-	"github.com/0xdiaz/tiketin-api/internal/domain/repositories"
-	"github.com/0xdiaz/tiketin-api/pkg/config"
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/internal/app/dto"
+	"github.com/0xdiaz/oneticket-api/internal/domain/models"
+	"github.com/0xdiaz/oneticket-api/internal/domain/repositories"
+	"github.com/0xdiaz/oneticket-api/pkg/config"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )

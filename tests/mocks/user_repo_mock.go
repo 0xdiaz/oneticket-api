@@ -3,8 +3,8 @@ package mocks
 import (
 	"sync"
 
-	"github.com/0xdiaz/tiketin-api/internal/domain/models"
-	"github.com/0xdiaz/tiketin-api/internal/domain/repositories"
+	"github.com/0xdiaz/oneticket-api/internal/domain/models"
+	"github.com/0xdiaz/oneticket-api/internal/domain/repositories"
 )
 
 // MockUserRepository is an in-memory UserRepository for unit tests.

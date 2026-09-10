@@ -342,7 +342,7 @@ package example
 import (
     "context"
 
-    "github.com/0xdiaz/tiketin-api/pkg/logger"
+    "github.com/0xdiaz/oneticket-api/pkg/logger"
 )
 
 // repository is the data-access contract this service needs.
@@ -627,14 +627,14 @@ gin-boilerplate/
 │   └── fixtures/                    # Test data
 │
 ├── scripts/                         # Dev/ops scripts
-├── go.mod                           # Module path: github.com/0xdiaz/tiketin-api
+├── go.mod                           # Module path: github.com/0xdiaz/oneticket-api
 ├── go.sum
 ├── Makefile                         # `make test` → ./tests/unit/... ./internal/... ./pkg/...
 └── README.md
 ```
 
 > **Module path note:** this boilerplate uses
-> `github.com/0xdiaz/tiketin-api`. Each stamped service should set its own path in `go.mod`
+> `github.com/0xdiaz/oneticket-api`. Each stamped service should set its own path in `go.mod`
 > (e.g. `github.com/your-org/your-service`) and update imports — a one-shot find/replace verified
 > with `go build ./...`.
 
@@ -674,8 +674,8 @@ gin-boilerplate/
        "gorm.io/gorm"
 
        // Internal packages
-       "github.com/0xdiaz/tiketin-api/pkg/logger"
-       "github.com/0xdiaz/tiketin-api/pkg/utils"
+       "github.com/0xdiaz/oneticket-api/pkg/logger"
+       "github.com/0xdiaz/oneticket-api/pkg/utils"
    )
    ```
 
@@ -861,8 +861,8 @@ package example
 import (
     "context"
 
-    "github.com/0xdiaz/tiketin-api/pkg/logger"
-    "github.com/0xdiaz/tiketin-api/pkg/utils"
+    "github.com/0xdiaz/oneticket-api/pkg/logger"
+    "github.com/0xdiaz/oneticket-api/pkg/utils"
     "github.com/gin-gonic/gin"
 )
 
@@ -917,7 +917,7 @@ package example
 import (
     "context"
 
-    "github.com/0xdiaz/tiketin-api/pkg/logger"
+    "github.com/0xdiaz/oneticket-api/pkg/logger"
 )
 
 // repository is the data-access contract this service needs.
@@ -1064,7 +1064,7 @@ Migrations are automatic: `bootstrap` collects every module's `Models()` and pas
 **✅ MANDATORY: Always use the response utilities in `pkg/utils`.**
 
 ```go
-import "github.com/0xdiaz/tiketin-api/pkg/utils"
+import "github.com/0xdiaz/oneticket-api/pkg/utils"
 
 func (h *Handler) Create(c *gin.Context) {
     var req CreateRequest
@@ -1625,7 +1625,7 @@ import (
     "context"
     "fmt"
 
-    "github.com/0xdiaz/tiketin-api/pkg/logger"
+    "github.com/0xdiaz/oneticket-api/pkg/logger"
 )
 
 // repository is the data-access contract this service needs (consumer-defined).
@@ -1669,8 +1669,8 @@ package product
 import (
     "context"
 
-    "github.com/0xdiaz/tiketin-api/pkg/logger"
-    "github.com/0xdiaz/tiketin-api/pkg/utils"
+    "github.com/0xdiaz/oneticket-api/pkg/logger"
+    "github.com/0xdiaz/oneticket-api/pkg/utils"
     "github.com/gin-gonic/gin"
 )
 
@@ -2052,7 +2052,7 @@ Each module talks to others only through their public `API` / `Servicer` interfa
 **WRONG:**
 ```go
 // ❌ Importing another module's unexported types / repository directly
-import "github.com/0xdiaz/tiketin-api/internal/modules/auth"
+import "github.com/0xdiaz/oneticket-api/internal/modules/auth"
 
 func (s *Service) doThing() {
     repo := auth.NewRepository(s.db)   // ❌ using auth's data layer from outside

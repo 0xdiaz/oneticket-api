@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/0xdiaz/tiketin-api/internal/domain/models"
-	"github.com/0xdiaz/tiketin-api/internal/domain/repositories"
+	"github.com/0xdiaz/oneticket-api/internal/domain/models"
+	"github.com/0xdiaz/oneticket-api/internal/domain/repositories"
 )
 
 // MockRefreshTokenRepository is an in-memory RefreshTokenRepository for unit tests.

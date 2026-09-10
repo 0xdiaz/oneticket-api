@@ -8,13 +8,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/0xdiaz/tiketin-api/internal/adapters/database"
-	"github.com/0xdiaz/tiketin-api/internal/adapters/database/migrations"
-	"github.com/0xdiaz/tiketin-api/internal/adapters/database/seeders"
-	"github.com/0xdiaz/tiketin-api/internal/app/routers"
-	"github.com/0xdiaz/tiketin-api/pkg/config"
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
-	"github.com/0xdiaz/tiketin-api/pkg/metrics"
+	"github.com/0xdiaz/oneticket-api/internal/adapters/database"
+	"github.com/0xdiaz/oneticket-api/internal/adapters/database/migrations"
+	"github.com/0xdiaz/oneticket-api/internal/adapters/database/seeders"
+	"github.com/0xdiaz/oneticket-api/internal/app/routers"
+	"github.com/0xdiaz/oneticket-api/pkg/config"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/metrics"
 )
 
 func main() {

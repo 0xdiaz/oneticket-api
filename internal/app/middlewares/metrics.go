@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"github.com/0xdiaz/tiketin-api/pkg/metrics"
+	"github.com/0xdiaz/oneticket-api/pkg/metrics"
 	"github.com/gin-gonic/gin"
 )
 

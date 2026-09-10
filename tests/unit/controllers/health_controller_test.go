@@ -6,10 +6,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/controllers"
-	"github.com/0xdiaz/tiketin-api/internal/app/dto"
-	"github.com/0xdiaz/tiketin-api/internal/app/services"
-	"github.com/0xdiaz/tiketin-api/pkg/metrics"
+	"github.com/0xdiaz/oneticket-api/internal/app/controllers"
+	"github.com/0xdiaz/oneticket-api/internal/app/dto"
+	"github.com/0xdiaz/oneticket-api/internal/app/services"
+	"github.com/0xdiaz/oneticket-api/pkg/metrics"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )

@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
 )
 
 type ServerConfiguration struct {

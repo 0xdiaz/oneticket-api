@@ -558,8 +558,8 @@ package services_test
 
 import (
     "testing"
-    "github.com/0xdiaz/tiketin-api/internal/app/services/auth"
-    "github.com/0xdiaz/tiketin-api/internal/domain/repositories"
+    "github.com/0xdiaz/oneticket-api/internal/app/services/auth"
+    "github.com/0xdiaz/oneticket-api/internal/domain/repositories"
 )
 
 func TestAuthService_ValidateToken(t *testing.T) {

@@ -1322,7 +1322,7 @@ tests/
 
 ```go
 ✅ CORRECT:
-import "github.com/0xdiaz/tiketin-api/pkg/logger"
+import "github.com/0xdiaz/oneticket-api/pkg/logger"
 
 // Info level - normal operations
 logger.Infof("User created successfully: ID=%d, Email=%s", user.ID, user.Email)
@@ -1396,7 +1396,7 @@ logger.Info("User:", user)          // Use structured fields instead
 
 ```go
 ✅ CORRECT:
-import "github.com/0xdiaz/tiketin-api/pkg/utils"
+import "github.com/0xdiaz/oneticket-api/pkg/utils"
 
 // Sanitize sensitive data
 sanitizedBody := utils.SanitizeLogData(requestBody)
@@ -1861,7 +1861,7 @@ c.JSON(http.StatusConflict, gin.H{"error": "Email already exists"})
 
 ```go
 ✅ CORRECT - Use utility functions:
-import "github.com/0xdiaz/tiketin-api/pkg/utils"
+import "github.com/0xdiaz/oneticket-api/pkg/utils"
 
 // 200 OK (from internal/modules/example/handler.go)
 func (h *Handler) List(c *gin.Context) {

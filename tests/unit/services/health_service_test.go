@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/services"
+	"github.com/0xdiaz/oneticket-api/internal/app/services"
 	"github.com/stretchr/testify/assert"
 )
 

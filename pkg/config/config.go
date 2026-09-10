@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
 	"github.com/spf13/viper"
 )
 

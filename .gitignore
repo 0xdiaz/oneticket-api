@@ -56,3 +56,5 @@ secrets/
 # Local-only / non-essential docs (do not commit)
 # =========================
 PROJECT_ANALYSIS.md
+# Serena (local IDE assistant state)
+.serena/

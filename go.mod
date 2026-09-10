@@ -1,4 +1,4 @@
-module github.com/0xdiaz/tiketin-api
+module github.com/0xdiaz/oneticket-api
 
 go 1.25.3
 

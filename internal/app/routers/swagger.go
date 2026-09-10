@@ -3,8 +3,8 @@ package routers
 import (
 	"net/http"
 
-	"github.com/0xdiaz/tiketin-api/api"
-	"github.com/0xdiaz/tiketin-api/pkg/config"
+	"github.com/0xdiaz/oneticket-api/api"
+	"github.com/0xdiaz/oneticket-api/pkg/config"
 	"github.com/gin-gonic/gin"
 )
 

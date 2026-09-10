@@ -3,7 +3,7 @@ package middlewares
 import (
 	"context"
 
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )

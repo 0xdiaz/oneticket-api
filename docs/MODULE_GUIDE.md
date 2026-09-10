@@ -94,7 +94,7 @@ nothing else changes.
 ## Per-service stamp checklist (when using this boilerplate for a new service)
 
 1. Update `module` in `go.mod` to `github.com/<org>/<service-name>`.
-2. Run find/replace `github.com/0xdiaz/tiketin-api` → new module path across `*.go`, `*.md`, `go.mod`.
+2. Run find/replace `github.com/0xdiaz/oneticket-api` → new module path across `*.go`, `*.md`, `go.mod`.
 3. Run `gofmt -w .` (import groups may resort after the rename).
 4. Verify with `go build ./...`.
 5. Rename the DB schema in `.env.example` (`MASTER_DB_SCHEMA`).

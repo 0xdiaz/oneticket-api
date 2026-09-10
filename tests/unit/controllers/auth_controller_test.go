@@ -8,11 +8,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/controllers"
-	"github.com/0xdiaz/tiketin-api/internal/app/dto"
-	"github.com/0xdiaz/tiketin-api/internal/app/services/auth"
-	"github.com/0xdiaz/tiketin-api/internal/domain/repositories"
-	"github.com/0xdiaz/tiketin-api/tests/mocks"
+	"github.com/0xdiaz/oneticket-api/internal/app/controllers"
+	"github.com/0xdiaz/oneticket-api/internal/app/dto"
+	"github.com/0xdiaz/oneticket-api/internal/app/services/auth"
+	"github.com/0xdiaz/oneticket-api/internal/domain/repositories"
+	"github.com/0xdiaz/oneticket-api/tests/mocks"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )

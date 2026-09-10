@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/routers"
+	"github.com/0xdiaz/oneticket-api/internal/app/routers"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )

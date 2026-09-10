@@ -128,7 +128,7 @@ module that needs another module receives its **public interface** (e.g. `auth.S
 **When sending success responses:**
 ```go
 // ✅ CORRECT — handler methods on a struct, using pkg/utils
-import "github.com/0xdiaz/tiketin-api/pkg/utils"
+import "github.com/0xdiaz/oneticket-api/pkg/utils"
 
 func (h *Handler) GetUser(c *gin.Context) {
     user, err := h.svc.GetUserByID(c.Request.Context(), id)

@@ -3,9 +3,9 @@ package middlewares
 import (
 	"strings"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/services/auth"
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
-	"github.com/0xdiaz/tiketin-api/pkg/utils"
+	"github.com/0xdiaz/oneticket-api/internal/app/services/auth"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 

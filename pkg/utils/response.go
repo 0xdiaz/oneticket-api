@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
-	"github.com/0xdiaz/tiketin-api/pkg/types"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/types"
 )
 
 // Default HTTP status messages mapping

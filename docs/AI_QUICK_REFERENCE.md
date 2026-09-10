@@ -100,7 +100,7 @@ Cross-module: only via a module's PUBLIC interface, injected in buildModules().
 
 A module is one folder = one package = one vertical slice. These are the real shapes from
 `internal/modules/example/` — copy that module to start a new one. Use the repo's actual import
-path `github.com/0xdiaz/tiketin-api`.
+path `github.com/0xdiaz/oneticket-api`.
 
 ### model.go — the tables this module owns
 ```go
@@ -160,7 +160,7 @@ package example
 import (
     "context"
 
-    "github.com/0xdiaz/tiketin-api/pkg/logger"
+    "github.com/0xdiaz/oneticket-api/pkg/logger"
 )
 
 // repository is the data-access contract this service needs (consumer-defined → testable).
@@ -191,8 +191,8 @@ package example
 import (
     "context"
 
-    "github.com/0xdiaz/tiketin-api/pkg/logger"
-    "github.com/0xdiaz/tiketin-api/pkg/utils"
+    "github.com/0xdiaz/oneticket-api/pkg/logger"
+    "github.com/0xdiaz/oneticket-api/pkg/utils"
     "github.com/gin-gonic/gin"
 )
 

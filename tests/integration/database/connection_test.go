@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/0xdiaz/tiketin-api/internal/adapters/database"
+	"github.com/0xdiaz/oneticket-api/internal/adapters/database"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"github.com/0xdiaz/tiketin-api/internal/app/controllers"
-	"github.com/0xdiaz/tiketin-api/internal/app/services"
+	"github.com/0xdiaz/oneticket-api/internal/app/controllers"
+	"github.com/0xdiaz/oneticket-api/internal/app/services"
 	"github.com/gin-gonic/gin"
 )
 

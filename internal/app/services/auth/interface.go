@@ -3,7 +3,7 @@ package auth
 import (
 	"context"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/dto"
+	"github.com/0xdiaz/oneticket-api/internal/app/dto"
 )
 
 // AuthServicer is the interface used by AuthController and AuthMiddleware.

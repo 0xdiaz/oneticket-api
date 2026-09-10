@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
-	"github.com/0xdiaz/tiketin-api/pkg/utils"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 

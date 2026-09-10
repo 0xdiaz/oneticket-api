@@ -1,12 +1,12 @@
 package routers
 
 import (
-	"github.com/0xdiaz/tiketin-api/internal/app/controllers"
-	"github.com/0xdiaz/tiketin-api/internal/app/middlewares"
-	"github.com/0xdiaz/tiketin-api/internal/app/services"
-	"github.com/0xdiaz/tiketin-api/internal/app/services/auth"
-	"github.com/0xdiaz/tiketin-api/internal/domain/repositories"
-	"github.com/0xdiaz/tiketin-api/pkg/utils"
+	"github.com/0xdiaz/oneticket-api/internal/app/controllers"
+	"github.com/0xdiaz/oneticket-api/internal/app/middlewares"
+	"github.com/0xdiaz/oneticket-api/internal/app/services"
+	"github.com/0xdiaz/oneticket-api/internal/app/services/auth"
+	"github.com/0xdiaz/oneticket-api/internal/domain/repositories"
+	"github.com/0xdiaz/oneticket-api/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/0xdiaz/tiketin-api/internal/adapters/database"
-	"github.com/0xdiaz/tiketin-api/internal/domain/models"
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/internal/adapters/database"
+	"github.com/0xdiaz/oneticket-api/internal/domain/models"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
 	"gorm.io/gorm"
 )
 

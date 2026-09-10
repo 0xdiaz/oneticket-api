@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/0xdiaz/tiketin-api/internal/adapters/database"
-	"github.com/0xdiaz/tiketin-api/internal/domain/models"
+	"github.com/0xdiaz/oneticket-api/internal/adapters/database"
+	"github.com/0xdiaz/oneticket-api/internal/domain/models"
 	"github.com/bonarizki-dat/Datatables-Gin/datatables"
 
 	"github.com/gin-gonic/gin"

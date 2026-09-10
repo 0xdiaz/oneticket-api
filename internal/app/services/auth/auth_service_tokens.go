@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/dto"
-	"github.com/0xdiaz/tiketin-api/pkg/config"
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/internal/app/dto"
+	"github.com/0xdiaz/oneticket-api/pkg/config"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
 )
 
 // RefreshToken generates new access and refresh tokens using a valid refresh token.

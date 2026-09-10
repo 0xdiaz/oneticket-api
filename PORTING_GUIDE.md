@@ -97,7 +97,7 @@ When you **fork or clone this boilerplate** to start a new project under your ow
    Replace `github.com/your-org/your-repo` with your actual module path.
 
 3. **Replace the old import path** across the codebase:
-   - Old path: `github.com/0xdiaz/tiketin-api`
+   - Old path: `github.com/0xdiaz/oneticket-api`
    - New path: your module path from step 2  
    Use your editor’s find-replace (or a script) over all `.go` files (and any config/docs that reference the path).
 
@@ -185,7 +185,7 @@ cp -r /path/to/boilerplate/* .
 
 ```go
 // BEFORE (in boilerplate)
-import "github.com/0xdiaz/tiketin-api/internal/app/dto"
+import "github.com/0xdiaz/oneticket-api/internal/app/dto"
 
 // AFTER (in your project)
 import "github.com/myorg/my-api/internal/app/dto"
@@ -208,7 +208,7 @@ import "github.com/myorg/my-api/internal/app/dto"
 package main
 
 import (
-    "github.com/0xdiaz/tiketin-api/pkg/config"
+    "github.com/0xdiaz/oneticket-api/pkg/config"
 )
 
 // AFTER

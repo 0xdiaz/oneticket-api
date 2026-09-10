@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/dto"
-	"github.com/0xdiaz/tiketin-api/internal/app/services/auth"
+	"github.com/0xdiaz/oneticket-api/internal/app/dto"
+	"github.com/0xdiaz/oneticket-api/internal/app/services/auth"
 )
 
 // MockAuthServicer is a test double for auth.AuthServicer.

@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"github.com/0xdiaz/tiketin-api/internal/app/services"
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
-	"github.com/0xdiaz/tiketin-api/pkg/utils"
+	"github.com/0xdiaz/oneticket-api/internal/app/services"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/utils"
 	"github.com/bonarizki-dat/Datatables-Gin/datatables"
 	"github.com/bonarizki-dat/Datatables-Gin/datatables/dto"
 	"github.com/gin-gonic/gin"

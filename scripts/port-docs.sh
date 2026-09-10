@@ -104,7 +104,7 @@ else
 fi
 
 # Current boilerplate info (to be replaced)
-OLD_MODULE_PATH="github.com/0xdiaz/tiketin-api"
+OLD_MODULE_PATH="github.com/0xdiaz/oneticket-api"
 OLD_PROJECT_NAME="go-gin-boilerplate"
 
 echo ""

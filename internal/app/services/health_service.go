@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/0xdiaz/tiketin-api/internal/adapters/database"
-	"github.com/0xdiaz/tiketin-api/internal/app/dto"
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
-	"github.com/0xdiaz/tiketin-api/pkg/metrics"
+	"github.com/0xdiaz/oneticket-api/internal/adapters/database"
+	"github.com/0xdiaz/oneticket-api/internal/app/dto"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/metrics"
 )
 
 // HealthChecker is a dependency health check (e.g. database, cache, HTTP).

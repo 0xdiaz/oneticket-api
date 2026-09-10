@@ -8,12 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/0xdiaz/tiketin-api/internal/app/dto"
-	"github.com/0xdiaz/tiketin-api/internal/app/services/auth"
-	"github.com/0xdiaz/tiketin-api/internal/domain/models"
-	"github.com/0xdiaz/tiketin-api/internal/domain/repositories"
-	"github.com/0xdiaz/tiketin-api/pkg/config"
-	"github.com/0xdiaz/tiketin-api/tests/mocks"
+	"github.com/0xdiaz/oneticket-api/internal/app/dto"
+	"github.com/0xdiaz/oneticket-api/internal/app/services/auth"
+	"github.com/0xdiaz/oneticket-api/internal/domain/models"
+	"github.com/0xdiaz/oneticket-api/internal/domain/repositories"
+	"github.com/0xdiaz/oneticket-api/pkg/config"
+	"github.com/0xdiaz/oneticket-api/tests/mocks"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )

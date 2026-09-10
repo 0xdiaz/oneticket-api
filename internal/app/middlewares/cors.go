@@ -3,8 +3,8 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/0xdiaz/tiketin-api/pkg/config"
-	"github.com/0xdiaz/tiketin-api/pkg/logger"
+	"github.com/0xdiaz/oneticket-api/pkg/config"
+	"github.com/0xdiaz/oneticket-api/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
 
