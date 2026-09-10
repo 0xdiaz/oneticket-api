@@ -208,7 +208,7 @@ Errors:
    - If >100 lines per function → plan extraction
 
 3. **Check dependencies**
-   - Which module am I in? Which file in the slice? (handler/service/repository/model)
+   - Which layer am I in? (controller / service / repository / model)
    - Am I following dependency direction?
    - Am I depending on a consumer-defined interface, not a concrete type?
 
@@ -436,7 +436,7 @@ func (s *Service) UpdateUser(ctx context.Context, id uint, req *UpdateUserReques
     if req.Email != user.Email {
         existing, _ := s.repo.GetUserByEmail(req.Email)
         if existing != nil {
-            return nil, ErrEmailAlreadyExists // module sentinel error
+            return nil, ErrEmailAlreadyExists // service sentinel error
         }
     }
 
@@ -468,7 +468,7 @@ func (s *Service) DeleteUser(ctx context.Context, id uint) error {
         return fmt.Errorf("check transactions: %w", err)
     }
     if hasTransactions {
-        return ErrCannotDelete // module sentinel error
+        return ErrCannotDelete // service sentinel error
     }
 
     // 3. Delete
@@ -516,7 +516,7 @@ func (r *Repository) ProcessPayment(clientID uint, amount float64) error {
 - [ ] No SQL string concatenation
 - [ ] All input validated (gin binding tags + c.ShouldBindJSON)
 - [ ] Passwords hashed with bcrypt
-- [ ] Protected routes behind the auth module's Middleware() guard
+- [ ] Protected routes behind middlewares.AuthMiddleware(authService)
 - [ ] Authorization checked where needed (using the authenticated user_id)
 - [ ] Sensitive data sanitized in logs
 - [ ] Rate limiting applied
@@ -729,8 +729,8 @@ If you see ANY of these, STOP and refactor:
 8. **Database access in handler** → Use the repository
 9. **Hardcoded secrets** → Move to .env
 10. **SQL string concatenation** → Use GORM/parameterized queries
-11. **Subfolder inside a module** → Split into more files in the SAME package
-12. **Importing another module's internals** → Depend on its public interface, injected
+11. **Subfolder inside a layer** → Split into more files in the SAME package
+12. **Skipping a layer** → A controller calls a service, never a repository
 
 ---
 
