@@ -28,6 +28,8 @@ func RegisterRoutes(route *gin.Engine) {
 	eventRepo := repositories.NewEventRepository()
 	ticketRepo := repositories.NewTicketRepository()
 	eventService := services.NewEventService(eventRepo, ticketRepo)
+	orderRepo := repositories.NewOrderRepository()
+	orderService := services.NewOrderService(eventRepo, orderRepo)
 
 	RegisterAuthRoutes(apiV1, authService)
 	RegisterExampleRoutes(apiV1, exampleService)
@@ -41,4 +43,5 @@ func RegisterRoutes(route *gin.Engine) {
 		protectedRoutes.GET("/profile", authController.Profile)
 		protectedRoutes.POST("/logout-all", authController.LogoutAll)
 	}
+	RegisterOrderRoutes(protectedRoutes, orderService)
 }

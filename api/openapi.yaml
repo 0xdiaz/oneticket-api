@@ -201,6 +201,26 @@ components:
           type: string
           format: date-time
 
+    PurchaseResponse:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          format: int64
+        ticket_id:
+          type: integer
+          format: int64
+        ticket_code:
+          type: string
+          description: Seat identifier, unique within the event.
+        event_id:
+          type: integer
+          format: int64
+        price_cents:
+          type: integer
+          format: int64
+          description: What the buyer paid, frozen at purchase time. An integer, never a float.
+
     EventResponse:
       type: object
       properties:
@@ -626,6 +646,62 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponse'
         '500':
           description: Failed to get event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /api/v1/events/{id}/purchase:
+    post:
+      summary: Purchase a ticket
+      description: >-
+        Sells one available ticket of the event to the authenticated user and
+        records the order. The price is frozen at purchase time, so a later
+        change to the event price never rewrites a completed purchase.
+      tags:
+        - Events
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Event id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: Ticket purchased successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PurchaseResponse'
+        '400':
+          description: Invalid event id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '409':
+          description: Sold out — no ticket left for this event
           content:
             application/json:
               schema:
