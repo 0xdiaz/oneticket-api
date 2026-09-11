@@ -8,10 +8,10 @@ Go 1.25 + Gin REST API (`github.com/0xdiaz/oneticket-api`), PostgreSQL via GORM,
 refresh token rotation. Derived from `0xdiaz/gin-boilerplate`.
 
 The domain is **flash sale ticketing**: an event has a fixed number of tickets, one row per seat,
-and a lot of people press buy at the same second. Today only the read path exists —
+and a lot of people press buy at the same second. Today only the read path exists,
 `GET /api/v1/events` and `/events/:id`. **Checkout is deliberately absent**; it is built live
 during a sharing session on agentic development (`docs/DEMO_RUNSHEET.md`). Do not implement it
-casually — see "The demo constraint" below.
+casually, see "The demo constraint" below.
 
 ## The demo constraint
 
@@ -23,7 +23,7 @@ purpose**:
 2. **`EventService.List` has an N+1.** It counts availability once per event. This is the bug the
    demo diagnoses on stage. `go run ./scripts/nplusone` reports `200 event -> 202 query`.
 
-If a task asks you to add checkout or fix the N+1, do it — but say plainly that it removes a demo
+If a task asks you to add checkout or fix the N+1, do it, but say plainly that it removes a demo
 beat, and prefer a branch over `main`.
 
 ## Security requirements
@@ -39,7 +39,7 @@ data.
 
 **Never** blacklist or strip characters from free text (`<`, `'`, `;`), sanitize on write, or block
 valid input like `O'Brien`. **Prefer framework-native, structural controls** that make the bug
-impossible over string surgery. **Match strength to exposure × impact** — "low risk, standard
+impossible over string surgery. **Match strength to exposure × impact**, "low risk, standard
 handling" is valid. **No speculative controls; no secrets in code, logs, or URLs.**
 
 **Fail closed once:** on a failed check, reject (4xx) + log server-side; **never degrade silently,
@@ -52,13 +52,13 @@ reset token in the response body, in every environment, because the mailer was w
 unconditionally and no `EmailSender` implementation existed. Anyone who knew a victim's email could
 take the account in two requests. Worse, the test suite **asserted** the vulnerable behaviour
 (`assert.Len(t, token, 64)`), so fixing it turned the suite red and looked like the fixer's mistake.
-It is fixed now — the endpoint fails closed with 503 outside development — but treat "the test
+It is fixed now. The endpoint fails closed with 503 outside development, but treat "the test
 passes" as weaker evidence than you would like.
 
 ## Commands
 
 ```bash
-make run                 # go run main.go (needs .env — see Runtime prerequisites)
+make run                 # go run main.go (needs .env, see Runtime prerequisites)
 make dev                 # full docker stack: postgres + pgadmin + API with Air live reload
 make test                # unit tests
 make test-integration    # integration tests (Testcontainers, no setup needed)
@@ -78,8 +78,8 @@ gofmt -w . && go vet ./... && go build ./... && go test ./tests/... -race
 ```
 
 Because nothing enforces this, a rule stated only in prose is a rule that will drift. When you add
-a convention worth keeping, prefer a mechanism that fails loudly — a compile-time assertion, a
-test, a database constraint — over a sentence in a document.
+a convention worth keeping, prefer a mechanism that fails loudly, a compile-time assertion, a
+test, a database constraint, over a sentence in a document.
 
 **`make test-coverage-check` is broken in two independent ways. Do not trust it.**
 
@@ -87,7 +87,7 @@ test, a database constraint — over a sentence in a document.
    The toolchain in use here (`golang.org/toolchain@v0.0.1-go1.25.3`) does not ship it:
    `go: no such tool "covdata"`.
 2. Even fixed, it would report `0.0%`. Tests live in `tests/unit/...`, separate packages from the
-   code they exercise, so without `-coverpkg` the profile measures the test packages themselves —
+   code they exercise, so without `-coverpkg` the profile measures the test packages themselves,
    which have no statements.
 
 Real coverage is **31.3%**, obtained with:
@@ -100,7 +100,7 @@ go tool cover -func=coverage.out | tail -1
 The 70% floor in the Makefile therefore guards nothing: it measures the wrong thing and cannot
 execute. Fix the measurement before anyone quotes the number.
 
-**`gofmt -w` only — never `goimports`.** Module imports are grouped above third-party here;
+**`gofmt -w` only, never `goimports`.** Module imports are grouped above third-party here;
 `goimports` resorts them and inflates every diff.
 
 ## Runtime prerequisites
@@ -140,8 +140,8 @@ execute. Fix the measurement before anyone quotes the number.
 
 - **Migrations are read from disk, not embedded.** `migrationsPath` is the relative constant
   `file://internal/adapters/database/migrations/sql`, so `migrations.Migrate()` only works with the
-  repository root as the working directory. Anything running from elsewhere — a test binary, a
-  script — must resolve the directory itself; `tests/integration/harness` walks up to `go.mod` and
+  repository root as the working directory. Anything running from elsewhere, a test binary, a
+  script. Must resolve the directory itself; `tests/integration/harness` walks up to `go.mod` and
   builds an absolute path for exactly this reason.
 
 - **SQL is the only source of schema truth.** There is no AutoMigrate. Every schema change is a new
@@ -153,7 +153,7 @@ execute. Fix the measurement before anyone quotes the number.
   are idempotent.
 
 - Swagger UI is served at `/swagger/` only when `DEBUG=true`. The spec in `api/openapi.yaml` is
-  **hand-written** and embedded via `api/spec.go` — there are no swag annotations, so a route change
+  **hand-written** and embedded via `api/spec.go`, there are no swag annotations, so a route change
   must be mirrored there by hand. It currently matches the registered routes exactly (13 paths);
   that number is worth preserving.
 
@@ -166,15 +166,15 @@ A feature is one file in each layer directory, tied together by a shared filenam
 main.go                          config → db → migrate → seed → serve
 api/                             hand-written openapi.yaml, embedded via spec.go
 internal/adapters/database/      connection, migrations/ (runner + sql/), seeders/
-internal/app/controllers/        HTTP layer — <name>_controller.go
+internal/app/controllers/        HTTP layer, <name>_controller.go
 internal/app/dto/                request/response types
 internal/app/middlewares/        auth, cors, metrics, rate_limit, request_id, request_log
 internal/app/routers/            router.go (engine), index.go (the only wiring),
                                  <name>_routes.go per feature, swagger.go
-internal/app/services/           business logic — <name>_service.go; auth/ is its own package
+internal/app/services/           business logic, <name>_service.go; auth/ is its own package
 internal/domain/models/          GORM structs with TableName()
 internal/domain/repositories/    interface + unexported impl + New*Repository()
-pkg/                             config, logger, metrics, types, utils — never imports internal/
+pkg/                             config, logger, metrics, types, utils, never imports internal/
 tests/unit/<layer>/              package <layer>_test, no database
 tests/integration/harness/       one Postgres container per package via Testcontainers
 tests/mocks/                     shared in-memory fakes
@@ -186,20 +186,20 @@ docs/                            standards, patterns, demo runsheet and prompts
 The reference slice is **`event`**: `event_model.go` → `event_repo.go` → `event_dto.go` →
 `event_service.go` → `event_controller.go` → `event_routes.go` → `event_repo_mock.go` →
 `event_service_test.go`. Copy its shape. The older `example` slice uses a package-level function
-for its repository instead of the interface pattern — follow `event`, not `example`.
+for its repository instead of the interface pattern, follow `event`, not `example`.
 
 Wiring lives only in `internal/app/routers/index.go`. It constructs repositories, injects them into
 services, and calls each feature's `Register<Name>Routes`. Adding a feature touches that file once.
 
 `/health` and `/metrics` mount at the **root** via `RegisterHealthRoutes(route)`, deliberately
-outside `/api/v1` so they skip the rate limiter — a throttled `/health` fails the container
+outside `/api/v1` so they skip the rate limiter, a throttled `/health` fails the container
 healthcheck exactly when it matters.
 
 ## Conventions that matter here
 
 - **Responses**: never `c.JSON` in a controller. Use `pkg/utils` (`utils.Ok`, `utils.Created`,
   `utils.Conflict`, `utils.RespondWithAPIError`, …). Every response shares
-  `{success, message, data, errors}` — a stable contract, see `docs/CONTRACTS.md`.
+  `{success, message, data, errors}`, a stable contract, see `docs/CONTRACTS.md`.
 
 - **Domain errors → HTTP**: services return sentinel errors (`ErrEventNotFound`,
   `ErrInvalidCredentials`, …); the controller maps them with `errors.Is` and falls back to
@@ -209,7 +209,7 @@ healthcheck exactly when it matters.
   themselves. The service decides whether absence is an error. This is a real trade-off and the
   cost is worth naming: absence and an outage are distinguished by *discipline* rather than by
   error value, so a repository that forgets the translation reports an outage as "not found". If
-  you change one repository to a sentinel, change them all — a codebase where half do each is worse
+  you change one repository to a sentinel, change them all, a codebase where half do each is worse
   than either.
 
 - **Repositories are the only layer that touches `database.DB`.** It is a package-level handle in
@@ -219,12 +219,12 @@ healthcheck exactly when it matters.
 
 - **Money is `int64` in the smallest unit** (`price_cents`), never a float, at every layer
   including JSON. `TestEventService_Get/edge_case/price_survives_the_database_round_trip`
-  uses `9007199254740993` — above `float64`'s exact-integer limit — so any float conversion
+  uses `9007199254740993`. Above `float64`'s exact-integer limit, so any float conversion
   anywhere on the path turns it red.
 
 - **Tracing**: every controller and service method wraps its body in
   `ctx, start := logger.LogStart(ctx, "EventService.Get")` and calls `logger.LogFinish` before
-  *every* return. Span name is `<Type>.<Method>` — no module prefix, unlike some sibling projects.
+  *every* return. Span name is `<Type>.<Method>`, no module prefix, unlike some sibling projects.
   Repositories trace nothing. `request_id` flows through `context.Context`.
 
 - **Tests live in `tests/`, not beside the code.** Unit tests in `tests/unit/<layer>/` as
@@ -235,14 +235,14 @@ healthcheck exactly when it matters.
 - **Every fake carries a compile-time assertion**:
   `var _ repositories.EventRepository = (*MockEventRepository)(nil)`. This is the repository's only
   real enforcement: with no linter and no CI, that line is what turns an interface change into a
-  compile error instead of a silently stale fake. It has already earned its place — adding a batch
+  compile error instead of a silently stale fake. It has already earned its place, adding a batch
   count method to `TicketRepository` failed the build at the mock rather than passing with a rotten
   test.
 
 - **Integration tests use the Testcontainers harness**, never a DSN or a skip.
   `func TestMain(m *testing.M) { os.Exit(harness.RunMain(m)) }` starts one Postgres per package,
   migrates it, and points `database.DB` at it; `harness.Reset(t)` truncates between tests. One
-  container per **package**, never per test — startup is ~2.5s and would multiply. Docker is the
+  container per **package**, never per test, startup is ~2.5s and would multiply. Docker is the
   only prerequisite; it works with OrbStack unmodified. The two older tests reading
   `TEST_DB_MASTER_DSN` and skipping are legacy; do not copy that pattern.
 
@@ -253,7 +253,7 @@ healthcheck exactly when it matters.
   and `UNIQUE (event_id, code)` are enforced by the database, so an application bug cannot write a
   row that violates them. Keep the Go constants (`models.TicketStatusAvailable`) in sync with the
   CHECK by hand. This is load-bearing: an integration test asserting an event with zero tickets
-  failed because `CHECK (total_tickets > 0)` refused the row — the test was wrong, not the code,
+  failed because `CHECK (total_tickets > 0)` refused the row, the test was wrong, not the code,
   which is a correction only a real database can make.
 
 - Hard limits from `docs/00_AI_CRITICAL_RULES.md`: file ≤ 300 lines, function ≤ 100 lines.
@@ -264,15 +264,15 @@ healthcheck exactly when it matters.
 
 Two probes exist because two classes of defect pass every test.
 
-**`scripts/loadtest`** — concurrent purchases against a fixed inventory. Reports whether the event
+**`scripts/loadtest`**, concurrent purchases against a fixed inventory. Reports whether the event
 oversold and exits non-zero if it did. Verified against a naive implementation (300 sold from 100,
 27 tickets sold twice), against a locked one (100 from 100), and against no endpoint at all.
 
-**`scripts/nplusone`** — counts the database statements one `GET /api/v1/events` costs as the row
+**`scripts/nplusone`**. Counts the database statements one `GET /api/v1/events` costs as the row
 count grows. `200 event -> 202 query` is the N+1 signature; the fixed shape is a flat `2`.
 
 Neither is a test, and that is the point: **N+1 passes the entire suite.** The result is correct,
-just expensive — no assertion fails, nothing is red. When you change a read path that fans out over
+just expensive, no assertion fails, nothing is red. When you change a read path that fans out over
 rows, or a write path under concurrency, run the probe rather than trusting green.
 
 Neither belongs behind `make` during a demo: their exit code is the verdict, so make appends
@@ -280,24 +280,24 @@ Neither belongs behind `make` during a demo: their exit code is the verdict, so 
 
 ## Committing
 
-Small commits at natural seams, as the work proceeds — not one commit at the end. For a typical
+Small commits at natural seams, as the work proceeds, not one commit at the end. For a typical
 feature that is roughly:
 
-1. `feat(x): migration NNNNNN + model` — the SQL pair and the GORM struct together; neither is
+1. `feat(x): migration NNNNNN + model`. The SQL pair and the GORM struct together; neither is
    meaningful alone
-2. `feat(x): repository + fake` — the interface, its implementation, and the mock that asserts
+2. `feat(x): repository + fake`. The interface, its implementation, and the mock that asserts
    against it
-3. `test(x): <what the tests pin>` — written before the implementation when the work is
+3. `test(x): <what the tests pin>`, written before the implementation when the work is
    behaviour-bearing
 4. `feat(x): service`
-5. `feat(x): routes, controller, openapi` — the contract surface, which changes together or not
+5. `feat(x): routes, controller, openapi`. The contract surface, which changes together or not
    at all
 
 Stage explicitly by path; never `git add .`. Each commit should build.
 
 ## Which docs to trust
 
-All of `docs/` was realigned with the code — the doc set previously described a package-by-feature
+All of `docs/` was realigned with the code. The doc set previously described a package-by-feature
 layout (`internal/modules/`, `internal/bootstrap/`, co-located tests) that never existed here, and
 `MODULE_GUIDE.md` declared itself authoritative while showing this repository's actual pattern as a
 ❌ WRONG example.
@@ -317,7 +317,7 @@ layout (`internal/modules/`, `internal/bootstrap/`, co-located tests) that never
   answer sheet from the planning dry run). Read them before touching anything the demo constraint
   above protects.
 
-  `docs/brainstorm/` and `docs/plans/` are **not on `main` on purpose** — the demo produces them
+  `docs/brainstorm/` and `docs/plans/` are **not on `main` on purpose**, the demo produces them
   live. Reference copies from the dry run are on branch `demo/plan-ready`, which is also the
   parachute if the live planning segment overruns.
 

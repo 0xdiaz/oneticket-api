@@ -1,10 +1,10 @@
-# Lembar jawaban — hasil dry run
+# Lembar jawaban, hasil dry run
 
 Pertanyaan yang benar-benar muncul saat `/ce-brainstorm` dan `/ce-plan` dijalankan
 pada 2026-09-11, beserta jawabannya. **Bacakan, jangan pikirkan.** Memikirkan
 keputusan produk sambil bicara adalah cara tercepat melewati time box.
 
-Parasut: `git checkout demo/plan-ready`. Branch itu berisi kedua artefak versi jadi —
+Parasut: `git checkout demo/plan-ready`. Branch itu berisi kedua artefak versi jadi,
 `docs/brainstorm/2026-09-11-checkout-requirements.md` (apa yang dibangun) dan
 `docs/plans/2026-09-11-001-feat-checkout-plan.md` (bagaimana membangunnya). Keduanya
 sengaja tidak ada di `main`: demo yang memproduksinya live.
@@ -14,7 +14,7 @@ sengaja tidak ada di `main`: demo yang memproduksinya live.
 ## Yang ditemukan dry run, sebelum daftar jawaban
 
 **1. "Tanyakan sekaligus dalam satu giliran" tidak akan dituruti.**
-Interaction Rule 1 di `ce-brainstorm`: *"Ask one question at a time — one question
+Interaction Rule 1 di `ce-brainstorm`: *"Ask one question at a time, one question
 per turn, even when sub-questions feel related."* Aturan skill menang atas prompt.
 Tiga keputusan = **tiga ronde blocking**, bukan satu.
 
@@ -40,7 +40,7 @@ hanya kalau setiap jawaban dibacakan, bukan dipikirkan.
 
 **Q3. Cara mengambil tiket yang tersedia?**
 > **Jangan dijawab dengan mekanisme.** Jawab: "itu keputusan implementasi. Yang
-> saya kunci hasilnya — tidak boleh oversell — plus test yang membuktikannya."
+> saya kunci itu hasilnya: tidak boleh oversell, plus test yang membuktikannya."
 >
 > Ini penting: begitu jawaban ini menyebut nama mekanisme, `ce-work` akan
 > mengimplementasikannya dengan benar sejak awal dan oversell tidak akan pernah
@@ -54,7 +54,7 @@ hanya kalau setiap jawaban dibacakan, bukan dipikirkan.
 > Sekarang, dengan nilai `paid`. Refund tinggal mengubah nilainya.
 
 **Q5. Test konkuren masuk suite default atau dipisah?**
-> Masuk suite default. 50 goroutine memperebutkan 20 tiket — cukup memicu race,
+> Masuk suite default. 50 goroutine memperebutkan 20 tiket, cukup memicu race,
 > cukup ringan untuk budget 3 menit. Jangan dipisah build tag: regresi race yang
 > hanya ketahuan kalau seseorang ingat menjalankannya bukan jaring pengaman.
 
