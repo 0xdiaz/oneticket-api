@@ -96,6 +96,8 @@ func TestJourney_GuardRejectsUnauthenticated(t *testing.T) {
 		{"token sampah", http.MethodGet, "/api/v1/profile", "not-a-jwt"},
 		{"token dipotong", http.MethodGet, "/api/v1/profile", "eyJhbGciOiJIUzI1NiJ9.truncated"},
 		{"logout-all tanpa token", http.MethodPost, "/api/v1/logout-all", ""},
+		{"beli tanpa token", http.MethodPost, "/api/v1/events/1/purchase", ""},
+		{"beli dengan token sampah", http.MethodPost, "/api/v1/events/1/purchase", "not-a-jwt"},
 	}
 
 	for _, tc := range cases {
@@ -124,3 +126,8 @@ func TestJourney_UnknownRouteIsHandled(t *testing.T) {
 		t.Error("404 came back with success=true")
 	}
 }
+
+// purchase is the shape POST /events/{id}/purchase answers with inside the
+// envelope. It mirrors dto.PurchaseResponse by field name only: what is under
+// test is the JSON a client reads, so the type is declared here rather than
+// imported.
