@@ -24,33 +24,83 @@ unduhan di panggung.
 
 ---
 
-## Satu keputusan yang harus diambil
+## MCP: matikan semuanya untuk sesi demo
 
-**`gopls` belum terpasang, dan Serena tidak jalan tanpanya.**
+Sudah diputuskan: **Serena dimatikan.** Tanpa `gopls` ia gagal di setiap pemanggilan
+lalu jatuh ke Read/Edit — terlihat sebagai kegagalan di layar persis saat lo ingin
+menunjukkan alat yang rapi.
 
-CLAUDE.md global menyebut Serena sebagai alat utama untuk semua pekerjaan kode. Tanpa
-`gopls`, setiap kali agent mencoba Serena ia gagal dengan:
+Menghapusnya lewat `claude mcp remove` bukan jawabannya: Serena terdaftar di **user
+scope** (`~/.claude.json`), jadi menghapusnya kena semua repo lo.
 
-```
-Found a Go version but gopls is not installed.
-```
+Yang dipakai: `--strict-mcp-config` dengan config kosong. Non-destruktif — setup global
+lo tidak disentuh, dan cukup tutup terminal untuk kembali normal.
 
-lalu jatuh ke Read/Edit bawaan. Fungsional, tapi **terlihat sebagai kegagalan di layar**
-persis di momen lo ingin menunjukkan alat yang rapi.
-
-Dua pilihan, ambil salah satu sebelum H-1:
-
-**A. Pasang gopls** — Serena hidup, navigasi simbolik jalan.
 ```bash
-go install golang.org/x/tools/gopls@latest
+claude --strict-mcp-config --mcp-config .claude/demo-mcp.json
 ```
-Verifikasi: `command -v gopls` mengembalikan path.
 
-**B. Matikan Serena untuk sesi ini** — hilangkan sumber kegagalannya. Lebih aman kalau
-lo tidak berencana memamerkan Serena, karena satu MCP yang gagal di awal sesi menurunkan
-kepercayaan pada semua yang setelahnya.
+`.claude/demo-mcp.json` sudah ada di repo, isinya `{"mcpServers": {}}`.
 
-Jangan biarkan apa adanya. Gagal-lalu-fallback adalah pilihan terburuk dari ketiganya.
+**Diverifikasi empiris**, bukan diasumsikan:
+
+```
+tanpa flag  : "apakah kamu punya mcp__serena__find_symbol?" -> YA
+dengan flag : "apakah kamu punya mcp__serena__find_symbol?" -> TIDAK
+```
+
+Catatan: `claude mcp list` **tidak** menghormati flag ini — ia tetap menampilkan daftar
+yang terkonfigurasi. Jangan pakai itu untuk memverifikasi; pakai pertanyaan di atas.
+
+### Efek samping yang justru diinginkan
+
+Tanpa flag, sesi lo memuat delapan MCP server dan **tiga di antaranya bermasalah**:
+
+| Server | Status |
+|---|---|
+| `plugin:github:github` | ✘ Gagal — `Authorization header is badly formatted` |
+| `claude.ai Tavily` | ! Butuh autentikasi |
+| `claude.ai Xero` | ! Butuh autentikasi |
+
+Ketiganya memunculkan peringatan di awal sesi. Tiga baris error sebelum lo mengetik apa
+pun adalah pembukaan yang buruk untuk sesi yang tesisnya soal perkakas yang rapi. Flag
+ini menghilangkan semuanya sekaligus.
+
+Yang ikut hilang dan memang tidak dibutuhkan demo: Figma, Google Drive, Playwright
+(tidak ada frontend), dan context7. Kalau lo ingin context7 tetap hidup — misalnya
+berjaga kalau agent perlu mencari dokumentasi GORM — isi `.claude/demo-mcp.json` dengan
+entri context7 saja alih-alih objek kosong.
+
+### Yang TIDAK ikut mati
+
+**Review lintas model lewat Codex tetap jalan.** `ce-code-review` memanggil peer lewat
+CLI (`codex-cli 0.145.0`), bukan lewat MCP, jadi flag ini tidak menyentuhnya. Ini
+penting karena review lintas model adalah salah satu poin sesi lo.
+
+Skill dan plugin juga tidak terpengaruh — flag ini hanya soal MCP.
+
+---
+
+## Plugin dan skill yang terpasang
+
+| Marketplace | Skill | Dipakai demo |
+|---|---|---|
+| `compound-engineering-plugin` | 37 | **Ya** — enam skill di bawah |
+| `eyay-toolkits` | 38 | Tidak (BMad, blockchain, design-thinking) |
+| `claude-plugins-official` | 31 | Tidak |
+
+Enam yang dipakai, semuanya sudah diverifikasi ada:
+
+```
+/ce-brainstorm   /ce-plan   /ce-work
+/ce-debug        /ce-code-review   /ce-compound
+```
+
+106 skill terpasang dan lo cuma memakai enam. Itu wajar dan tidak perlu dibereskan —
+skill tidak dimuat sampai dipanggil. Yang perlu diingat cuma satu: **jangan mengetik
+`/bmad-sprint-run`** (dari `eyay-toolkits`). Definisinya menjalankan semua story di
+semua epic tanpa jeda sampai selesai atau blocked — sekali diketik, kendali atas jam
+dinding hilang.
 
 ---
 
@@ -70,6 +120,9 @@ Jalankan semuanya. Setiap baris di sini pernah gagal di mesin ini sebelum diperb
 
 ```bash
 cd oneticket-api
+
+# 0. Sesi demo dijalankan dengan MCP dimatikan — lihat bagian MCP di atas
+#    claude --strict-mcp-config --mcp-config .claude/demo-mcp.json
 
 # 1. Dependency terunduh — jangan pernah menunggu ini di depan orang
 go mod download
