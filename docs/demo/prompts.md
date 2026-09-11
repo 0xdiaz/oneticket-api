@@ -251,8 +251,9 @@ Dua ukuran di atas lo yang menulis alatnya. Yang ini tidak: yang dipakai adalah
 ./scripts/apitest/run.sh
 ```
 
-Selesai dalam sepersekian detik, dan di kondisi awal repo ia menemukan empat hal
-di dua endpoint. Yang paling layak ditunjuk:
+Selesai dalam 0,14 detik, dan di kondisi awal repo ia menemukan empat hal di dua
+endpoint. Seed-nya dipin di run.sh, jadi hasilnya sama tiap dijalankan. Yang paling
+layak ditunjuk:
 
 ```
 GET /api/v1/events/9223372036854775808  ->  500

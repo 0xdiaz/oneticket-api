@@ -18,6 +18,12 @@ BASE_URL="${BASE_URL:-http://localhost:8000}"
 SPEC="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/api/openapi.yaml"
 MAX_EXAMPLES="${MAX_EXAMPLES:-25}"
 
+# Fuzzing is random, so the number of findings moves between runs: the
+# out-of-range id that returns 500 turns up every time, the negative id only
+# sometimes. A pinned seed makes the run reproducible, which matters when the
+# output is being read off a projector. Set SEED= (empty) to let it roam.
+SEED="${SEED-233638011671589819716048247251880411702}"
+
 # Read-only by default. The write endpoints register users, revoke sessions and
 # mail password resets, so fuzzing them needs a throwaway database rather than
 # whatever the machine happens to be pointing at. Pass --all to include them.
@@ -45,10 +51,14 @@ echo "Target : $BASE_URL"
 echo "Scope  : $INCLUDE"
 echo
 
+SEED_ARG=()
+[[ -n "$SEED" ]] && SEED_ARG=(--seed "$SEED")
+
 uvx --from schemathesis st run "$SPEC" \
   --url "$BASE_URL" \
   --include-path-regex "$INCLUDE" \
   --max-examples "$MAX_EXAMPLES" \
+  "${SEED_ARG[@]}" \
   "$@"
 STATUS=$?
 

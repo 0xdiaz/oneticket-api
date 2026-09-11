@@ -8,7 +8,18 @@ go run main.go &                    # butuh server hidup
 ./scripts/apitest/run.sh            # endpoint baca saja
 ./scripts/apitest/run.sh --all      # termasuk yang menulis, pakai DB sekali pakai
 MAX_EXAMPLES=200 ./scripts/apitest/run.sh
+SEED= ./scripts/apitest/run.sh      # acak, tiap run beda
 ```
+
+## Soal seed
+
+`run.sh` memakai seed yang dipin. Fuzzing itu acak, jadi tanpa itu jumlah
+temuannya goyang antar-run: bug 500 muncul tiap kali, tapi temuan id negatif cuma
+kadang-kadang. Kalau outputnya mau dibaca orang dari proyektor, hasil yang beda
+tiap dijalankan itu mahal.
+
+Jalankan dengan `SEED=` kosong kalau memang mau berburu yang belum pernah ketemu.
+Seed yang dipakai selalu dicetak di ringkasan, jadi temuan baru bisa diulang.
 
 Tidak ada kode test yang perlu ditulis. Setiap kasus dibangkitkan dari spec yang
 sudah ada di repo: Schemathesis membaca tipe dan batas di spec, mengirim request
@@ -21,7 +32,7 @@ pekerjaan dokumentasi.
 
 ## Yang ditemukan di kondisi awal repo
 
-Empat temuan di dua endpoint, dalam waktu di bawah satu detik:
+Empat temuan di dua endpoint, dalam 0,14 detik, sama tiap kali dijalankan:
 
 ```
 GET /api/v1/events/9223372036854775808  ->  500

@@ -332,7 +332,14 @@ Lalu kalimat yang sebenarnya mau lo tanam:
 Kalau ada yang tidak percaya, tiap temuan bawa perintah `curl`-nya sendiri. Jalankan di
 layar saat itu juga.
 
-**Jangan diperbaiki live.** Ini bahan segmen berikutnya, bukan story ketiga.
+Seed-nya dipin di `run.sh`, dan itu tidak perlu disembunyikan. Kalau ada yang tanya:
+
+> "Iya, seed-nya saya kunci, biar yang kalian liat sama persis tiap saya jalanin. Lepas
+> seed-nya, dia nemu hal lain lagi. Yang lima ratus ini sih muncul terus."
+
+**Jangan diperbaiki live.**
+
+Ini bahan segmen berikutnya, bukan story ketiga.
 
 ---
 

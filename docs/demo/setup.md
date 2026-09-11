@@ -169,7 +169,7 @@ go run ./scripts/smoke
 
 # f. Kontrak API. Di kondisi awal ini WAJIB menemukan sesuatu
 ./scripts/apitest/run.sh
-#    -> 4 failures, salah satunya 500 di /events/{id}, exit bukan 0
+#    -> tepat 4 failures (seed dipin), salah satunya 500 di /events/{id}, exit 1
 
 # g. Scan keamanan, paling lambat, sekitar 1,5 menit
 ./scripts/security/run.sh
