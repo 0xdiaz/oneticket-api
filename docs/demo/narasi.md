@@ -335,6 +335,175 @@ Lalu tutup dengan yang paling jujur, karena ini yang membedakan sesi lo dari kon
 
 ---
 
+## Kenapa bukan multi-agent
+
+Pertanyaan ini hampir pasti datang, dan jawabannya memperkuat tesis lo — jadi jangan
+defensif. Sebut sendiri di pembukaan, satu kalimat setelah empat tingkat agent:
+
+> "Tingkat tiga dan empat itu ada, dan di Claude Code namanya agent teams. Hari ini
+> sengaja tidak dipakai. Nanti saya jelaskan kenapa, dan alasannya bukan karena belum
+> sempat."
+
+Lalu saat ditanya, tiga alasan. Yang ketiga yang paling penting.
+
+**Satu — bentuk pekerjaannya tidak cocok.** Dokumentasinya sendiri menulis: *"For
+sequential tasks, same-file edits, or work with many dependencies, a single session or
+subagents are more effective."* Implementasi di demo ini persis itu: unit yang saling
+bergantung, file yang sama. Teams unggul untuk riset paralel, review, dan debat
+hipotesis — bukan implementasi berurutan.
+
+**Dua — menyalakannya mengubah hal lain.** *"A subagent that Claude names launches as a
+teammate, so teams can form even when you didn't ask for one."* `ce-code-review` memang
+menyebar subagent bernama; begitu teams menyala, roster itu berubah jadi teammate. Fitur
+eksperimental yang diam-diam mengubah bagian pipeline yang sudah diuji bukan hal yang
+dinyalakan seminggu sebelum tampil.
+
+**Tiga — lima Claude punya blind spot yang sama.** Ini yang benar-benar penting:
+
+> "Teammate itu instance Claude Code. Model yang sama, cara salah yang sama, cuma lebih
+> banyak. Lima agent yang saling berdebat tetap lima agent dengan asumsi yang mirip.
+>
+> Yang saya butuhkan bukan lebih banyak agent — tapi satu yang **beda cara salahnya**.
+> Makanya review di sini lewat model lain, Codex, bukan lewat lebih banyak Claude."
+
+Paralelisme menambah kecepatan. Model yang berbeda menambah **sudut pandang**. Untuk
+review, yang kedua jauh lebih berharga.
+
+---
+
+## Bank jawaban Q&A
+
+Jawaban yang sudah disiapkan untuk pertanyaan yang kemungkinan besar datang. Ambil
+intinya, jangan hafalkan kalimatnya.
+
+### "Bedanya apa sama Copilot atau autocomplete di IDE?"
+
+> "Autocomplete melanjutkan kalimat yang sedang saya tulis. Yang tadi kalian lihat itu
+> membaca plan, menulis migrasi, menulis test, melihatnya gagal, lalu menulis
+> implementasinya — dan mengukur hasilnya sendiri.
+>
+> Perbedaan yang sebenarnya bukan di modelnya. Autocomplete tidak punya konsep
+> 'selesai'. Agent punya: ada definition of done, ada gate verifikasi, dan dia tahu dia
+> belum selesai sampai gate itu hijau."
+
+### "Berapa biayanya sekali jalan?"
+
+Jangan mengarang angka. Yang jujur:
+
+> "Saya tidak punya angka pasti untuk sesi ini karena belum saya ukur per-run. Yang bisa
+> saya katakan soal bentuk biayanya: review paling mahal — dia menyebar beberapa persona
+> plus satu model lain. Implementasi jauh lebih murah dari yang orang kira, karena
+> sebagian besar tokennya dipakai membaca, bukan menulis.
+>
+> Dan biaya yang lebih penting bukan token. Kerja minggu ini yang paling banyak makan
+> waktu bukan menjalankan agent — tapi membereskan repo sampai agentnya berguna."
+
+### "Kalau agentnya salah dan nggak ketahuan gimana?"
+
+Ini pertanyaan terbaik yang bisa datang. Jawab dengan contoh nyata dari repo ini:
+
+> "Itu terjadi di repo ini, dan bukan kasus kecil.
+>
+> Endpoint forgot-password mengembalikan token reset password di body respons — siapa
+> pun yang tahu email korban bisa ambil akunnya dalam dua request. Test suite-nya
+> **hijau**. Bukan cuma hijau: ada test yang secara eksplisit memastikan token itu
+> dikembalikan. Jadi siapa pun yang memperbaikinya akan melihat test merah dan mengira
+> dirinya yang salah.
+>
+> Jadi jawabannya: test hijau itu bukti yang lebih lemah dari yang kita kira. Makanya
+> di sesi ini saya tidak cuma menjalankan test — saya mengukur. Load test untuk
+> konkurensi, query probe untuk biaya. Dua-duanya menangkap hal yang test tidak
+> tangkap."
+
+### "Ini bisa dipakai di codebase legacy yang berantakan?"
+
+> "Bisa, tapi urutannya kebalik dari yang orang kira.
+>
+> Repo ini waktu saya mulai punya lima belas dokumen yang menggambarkan arsitektur yang
+> tidak ada di kodenya. Dokumen yang paling awal dibaca agent justru menyuruh membangun
+> di direktori yang tidak pernah dibuat. Agent yang nurut ke dokumentasi itu akan
+> menghasilkan kode yang yatim piatu di tengah codebase.
+>
+> Jadi untuk legacy: jangan mulai dengan menyuruh agent mengerjakan fitur. Mulai dengan
+> menyuruhnya **membaca satu area dan melaporkan apa yang sebenarnya ada di sana**, lalu
+> perbaiki dokumennya. Itu pekerjaan yang justru cocok untuk agent, dan hasilnya modal
+> untuk semua pekerjaan setelahnya."
+
+### "Apa yang agent tetap tidak bisa?"
+
+> "Dia tidak bisa tahu apa yang seharusnya benar kalau tidak ada yang memberitahunya.
+>
+> Contoh dari hari ini: ada test yang saya minta dia tulis untuk event dengan nol tiket.
+> Database menolaknya, karena ada CHECK constraint yang melarang event tanpa inventaris.
+> Testnya yang salah, bukan kodenya. Yang mengoreksi bukan agent, bukan saya — tapi
+> database yang punya aturannya.
+>
+> Itu pola umumnya. Agent sangat baik mengikuti aturan yang tertulis, dan buta terhadap
+> aturan yang cuma ada di kepala seseorang. Makanya aturan yang penting harus ditaruh di
+> tempat yang gagal dengan berisik: constraint database, compile error, test — bukan
+> kalimat di dokumen."
+
+### "Kode kita dikirim ke mana? Aman?"
+
+Jawab lurus, jangan berkelit:
+
+> "Untuk review, iya — ada satu pass yang dikirim ke model lain, dan skill-nya memang
+> mengumumkan itu sebelum jalan. Repo yang saya pakai hari ini publik, jadi tidak ada
+> masalah.
+>
+> Untuk repo kerjaan, itu keputusan kebijakan, bukan keputusan teknis. Passnya bisa
+> dimatikan, dan ada fallback reviewer lokal. Yang tidak saya sarankan adalah
+> menyalakannya tanpa tahu — makanya disclosure itu ada."
+
+### "Junior jadi nggak belajar dong?"
+
+> "Kekhawatirannya wajar, tapi menurut saya yang berubah levelnya, bukan jumlahnya.
+>
+> Yang hilang: menghafal sintaks, menulis boilerplate, mencari cara memasang sesuatu.
+> Yang justru jadi lebih penting: bisa membaca diff dan tahu mana yang salah, bisa
+> merumuskan apa yang harus benar sebelum kodenya ditulis, dan tahu kapan harus tidak
+> percaya pada test hijau.
+>
+> Tiga hal itu dulu butuh bertahun-tahun untuk dilatih karena kesempatannya jarang.
+> Sekarang setiap hari."
+
+### "Kenapa Claude Code, bukan Cursor atau yang lain?"
+
+> "Saya tidak akan mengklaim ini yang terbaik — saya cuma yang paling dalam pakai ini.
+>
+> Yang membuat saya bertahan bukan modelnya, tapi bahwa workflow-nya bisa ditulis sebagai
+> skill yang masuk ke repo dan ikut versi kontrol. Pipeline yang kalian lihat hari ini
+> ada di repo, bisa direview, bisa diperbaiki. Itu bedanya dengan cara kerja yang cuma
+> ada di kepala satu orang.
+>
+> Sebagian besar yang saya tunjukkan hari ini — konteks, pengukuran, mencatat pelajaran —
+> tidak terikat ke alat ini sama sekali."
+
+### "Butuh berapa lama setup sampai bisa seperti ini?"
+
+> "Repo ini butuh beberapa hari, dan sebagian besarnya bukan setup alat — tapi
+> membereskan yang sudah ada: dokumentasi yang tidak cocok dengan kode, tooling yang
+> rusak, dan membuat dua alat ukur.
+>
+> Tapi itu bukan biaya yang harus dibayar di depan. Ambil satu fitur, kerjakan serapi
+> mungkin, jadikan itu contoh yang ditunjuk di prompt berikutnya. Nilainya menumpuk dari
+> situ."
+
+### "Kenapa nggak pakai multi-agent?"
+
+Lihat bagian [Kenapa bukan multi-agent](#kenapa-bukan-multi-agent) di atas.
+
+### Pertanyaan yang tidak punya jawaban
+
+Akan ada. Jawab apa adanya:
+
+> "Saya tidak tahu. Belum saya coba."
+
+Lalu tulis di parking lot. Satu "saya tidak tahu" yang jujur menaikkan kepercayaan pada
+semua jawaban lain lebih banyak daripada satu jawaban yang dikarang.
+
+---
+
 ## Kalau ada yang tidak berjalan
 
 | Situasi | Katakan |
