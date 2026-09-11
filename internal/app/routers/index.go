@@ -28,6 +28,8 @@ func RegisterRoutes(route *gin.Engine) {
 	eventRepo := repositories.NewEventRepository()
 	ticketRepo := repositories.NewTicketRepository()
 	eventService := services.NewEventService(eventRepo, ticketRepo)
+	purchaseRepo := repositories.NewPurchaseRepository()
+	purchaseService := services.NewPurchaseService(eventRepo, purchaseRepo)
 
 	RegisterAuthRoutes(apiV1, authService)
 	RegisterExampleRoutes(apiV1, exampleService)
@@ -40,5 +42,9 @@ func RegisterRoutes(route *gin.Engine) {
 	{
 		protectedRoutes.GET("/profile", authController.Profile)
 		protectedRoutes.POST("/logout-all", authController.LogoutAll)
+
+		// Buying is not public. Registering here rather than alongside the
+		// public event routes is what puts checkout behind the guard.
+		RegisterPurchaseRoutes(protectedRoutes, purchaseService)
 	}
 }
