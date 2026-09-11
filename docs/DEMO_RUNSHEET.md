@@ -96,8 +96,8 @@ tolak di tempat. Refund adalah story kedua, dan itu justru buktinya nanti.
 | 00:00 | 8' | **Pembukaan + thesis**, 4 tingkat agent, peta pipeline | - |
 | 00:08 | 8' | **Kondisi awal repo**, AI rules, doc yang sudah disamakan, test yang ada | - |
 | 00:16 | 12' | 🎬 **`/ce-brainstorm`**, live, time box keras | ❌ lo jawab agent |
-| 00:28 | 15' | 🎬 **`/ce-plan`**, live, menghasilkan `docs/plans/checkout.md` | ❌ lo jawab agent |
-| 00:43 | 22' | 🎬 **`/ce-work docs/plans/checkout.md`**, agent implement | ✅ **jendela besar** |
+| 00:28 | 15' | 🎬 **`/ce-plan`**, live, menghasilkan plan di `docs/plans/` | ❌ lo jawab agent |
+| 00:43 | 22' | 🎬 **`/ce-work <path plan>`**, agent implement | ✅ **jendela besar** |
 | 01:05 | 15' | 🎬 **Puncak**. Load test → query probe `202 query` → `/ce-debug` → fix → `2 query` → Schemathesis nemu 500 | sedikit |
 | 01:20 | 10' | 🎬 **ZAP jalan di background** + **`/ce-code-review`** fan-out persona paralel | ✅ **jendela** |
 | 01:30 | 7' | 🎬 **`/ce-compound`**, learning masuk `docs/solutions/` | - |
@@ -225,7 +225,7 @@ Siapkan **parking lot**, tulis di papan, jawab di segmen 01:50.
       jaringan yang tidak boleh terjadi di panggung
 - [ ] Seed prompt brainstorm + plan ada di `docs/demo/prompts.md`, tinggal paste
 - [ ] Daftar pertanyaan yang muncul saat dry run + jawaban satu kalimat masing-masing
-- [ ] Branch `demo/plan-ready` berisi `docs/plans/checkout.md` hasil dry run (parasut)
+- [ ] Branch `demo/plan-ready` berisi `docs/brainstorm/` + `docs/plans/` hasil dry run (parasut)
 - [ ] Semua prompt ada di file teks, tinggal paste, ngetik prompt live itu dead air
 - [ ] Branch parachute `demo/final` yang sudah jadi dan sudah diverifikasi
 - [ ] **Dry run persis sekali** dengan prompt yang sama, catat menitnya per segmen
