@@ -28,9 +28,12 @@ tests/
 │   ├── services/          # Business logic tests
 │   ├── repositories/      # Data access layer tests
 │   └── utils/             # Utility function tests
-├── integration/           # Integration tests (real DB, external services)
-│   ├── api/              # End-to-end API tests
-│   └── database/         # Database integration tests
+├── integration/           # Integration tests (real DB via Testcontainers)
+│   ├── harness/          # Shared Postgres container + migrations
+│   ├── api/              # Router-level tests without a database
+│   ├── events/           # Service + repository against a real database
+│   └── database/         # Database connectivity
+├── e2e/                   # Full stack over a real socket, real middleware
 └── fixtures/             # Test data (JSON, CSV, etc.)
 ```
 
@@ -100,6 +103,47 @@ import (
 )
 ```
 
+#### E2E Tests (`tests/e2e/`)
+
+A different layer from integration, not a thicker version of it.
+
+| | Integration | E2E |
+|---|---|---|
+| Entry point | a service function | an HTTP request on a real socket |
+| Middleware | not involved | the whole chain, in order |
+| Auth token | not needed | minted by the real login endpoint |
+| Router | not involved | `routers.SetupRoute()`, the same one `main.go` builds |
+
+Integration proves a service and its repository agree about the database. E2E proves
+the pieces are wired together at all: that the route is registered, that the guard is
+attached to the right group, that the JSON on the wire carries the field names a client
+reads.
+
+This layer owns a bug class no other layer sees. Comment out the `AuthMiddleware` line
+in `internal/app/routers/index.go`: every unit and integration package stays green and
+only `tests/e2e` goes red. A handler can be correct and unreachable.
+
+Rules:
+- Never call a service or repository directly. Every assertion goes through `http.Client`.
+- Always build the router with `routers.SetupRoute()`. A test that registers its own
+  routes proves nothing about the ones the application registers.
+- Use the shared helpers in `client_test.go` rather than hand-rolling requests.
+
+```go
+// tests/e2e/main_test.go
+func TestMain(m *testing.M) {
+    code := harness.RunMain(m, startServer)
+    if server != nil {
+        server.Close()
+    }
+    os.Exit(code)
+}
+```
+
+`harness.RunMain` takes optional `before` hooks that run after migrations and before any
+test. The HTTP server cannot be built any earlier: its handlers resolve repositories
+that need `database.DB` already wired.
+
 #### Fixtures (`tests/fixtures/`)
 - Reusable test data
 - JSON, CSV, SQL files
@@ -125,6 +169,9 @@ go test ./tests/unit/...
 # Run only integration tests
 go test ./tests/integration/...
 
+# Run only E2E tests
+go test ./tests/e2e/...
+
 # Run specific package tests
 go test ./tests/unit/services/...
 
@@ -142,6 +189,24 @@ go test -tags=integration ./tests/...
 
 - **`tests/integration/api/health_test.go`** — Tests `GET /health` without requiring database. Expects 200 (healthy) or 503 (unhealthy). Run with: `go test ./tests/integration/api/...`
 - **`tests/integration/database/connection_test.go`** — Tests database connectivity. Skipped unless `TEST_DB_MASTER_DSN` is set (e.g. `host=localhost user=postgres password=... dbname=test port=5432 sslmode=disable`). Run with: `go test ./tests/integration/database/...`
+- The two tests above are the legacy pattern. New work uses `tests/integration/harness`, which starts a real Postgres per package and needs no environment variable and no skip. Do not copy the `TEST_DB_MASTER_DSN` pattern.
+
+## Beyond `go test`
+
+Five tools in `scripts/` cover defect classes that pass every test in this directory.
+Each has its own README.
+
+| Tool | Question it answers |
+|---|---|
+| `scripts/loadtest` | Does concurrency corrupt the inventory |
+| `scripts/nplusone` | What does one request cost, not whether it is right |
+| `scripts/smoke` | Is the thing that shipped actually alive |
+| `scripts/apitest` | Do the answers match `api/openapi.yaml` (Schemathesis) |
+| `scripts/security` | Is anything leaking outside the handlers (OWASP ZAP) |
+
+**Regression is a rule, not a directory.** There is no `tests/regression/`. Every bug fix
+starts from one test that is red first, and that test then stays in whichever layer it
+was born in.
 
 ## Testing Standards
 

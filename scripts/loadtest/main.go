@@ -56,7 +56,7 @@ func main() {
 	if cfg.token == "" && cfg.email != "" {
 		token, err := login(client, cfg)
 		if err != nil {
-			fmt.Printf("  login gagal (%v) — lanjut tanpa token\n\n", err)
+			fmt.Printf("  login gagal (%v), lanjut tanpa token\n\n", err)
 		} else {
 			cfg.token = token
 		}

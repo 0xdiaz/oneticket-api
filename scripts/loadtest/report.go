@@ -97,7 +97,7 @@ func report(cfg config, before, after eventState, res *results) int {
 		fmt.Println("  " + strings.Repeat("-", 54))
 		fmt.Println("  BELUM ADA YANG TERJUAL")
 		fmt.Println()
-		fmt.Println("  Kalau statusnya 404, endpoint checkout memang belum dibuat —")
+		fmt.Println("  Kalau statusnya 404, endpoint checkout memang belum dibuat,")
 		fmt.Println("  itu kondisi awal yang diharapkan sebelum story dikerjakan.")
 		fmt.Println("  Kalau 401, jalankan ulang dengan -token atau cek user seed.")
 		fmt.Println("  Sesuaikan -path kalau kontraknya berbeda.")
@@ -109,7 +109,7 @@ func report(cfg config, before, after eventState, res *results) int {
 
 	if oversold {
 		fmt.Println("  " + strings.Repeat("!", 54))
-		fmt.Printf("  OVERSELL — terjual %d dari %d tiket\n", sold, before.Total)
+		fmt.Printf("  OVERSELL, terjual %d dari %d tiket\n", sold, before.Total)
 		fmt.Println("  " + strings.Repeat("!", 54))
 		if sold > before.Total {
 			fmt.Printf("      %d order lebih banyak dari tiket yang ada\n", sold-before.Total)
@@ -133,7 +133,7 @@ func report(cfg config, before, after eventState, res *results) int {
 	}
 
 	fmt.Println("  " + strings.Repeat("-", 54))
-	fmt.Printf("  AMAN — terjual %d dari %d tiket, tidak ada yang dobel\n", sold, before.Total)
+	fmt.Printf("  AMAN, terjual %d dari %d tiket, tidak ada yang dobel\n", sold, before.Total)
 	fmt.Println("  " + strings.Repeat("-", 54))
 	fmt.Println()
 	return 0

@@ -1,9 +1,9 @@
-# Runsheet — Sharing Session: Agentic AI-Driven Development
+# Runsheet, Sharing Session: Agentic AI-Driven Development
 
 **Format:** meetup publik, 120 menit, Q&A menyatu ke dalam sesi
 **Kendaraan demo:** Flash Sale Ticketing API di atas `gin-boilerplate`
-**Pipeline:** Compound Engineering (BMad tidak dipakai — lihat "Kenapa CE saja")
-**Yang dijual:** bukan produknya, tapi *agent yang dikasih konteks bagus bisa dikasih kerjaan beneran*
+**Pipeline:** Compound Engineering (BMad tidak dipakai, lihat "Kenapa CE saja")
+**Yang dijual:** *agent yang dikasih konteks bagus bisa dikasih kerjaan beneran*. Produknya cuma kendaraan.
 
 ---
 
@@ -22,7 +22,7 @@ situ, potong.
 
 Dua bingkai ini dipakai supaya audiens punya peta sebelum lihat terminal.
 
-**1. Empat tingkat cara pakai agent** — supaya jelas yang didemokan ini yang mana:
+**1. Empat tingkat cara pakai agent**, supaya jelas yang didemokan ini yang mana:
 
 ```
 Claude Code single agent      -> mengendalikan 1 agent
@@ -35,7 +35,7 @@ Sesi ini di tingkat 1 dan menyentuh 2 (`ce-code-review` menyebar beberapa person
 paralel + peer cross-model). Sebut ini di depan supaya tidak ada yang menyangka
 lagi lihat swarm otonom.
 
-**2. Pipeline-nya** — dan tunjukkan kotak mana yang dijalankan hari ini:
+**2. Pipeline-nya**, dan tunjukkan kotak mana yang dijalankan hari ini:
 
 ```
 Brainstorm/Analisa -> Planning -> Work + Verifikasi -> Review -> Compound/Learn
@@ -53,11 +53,11 @@ Ini yang menentukan seluruh struktur di bawah.
 
 | Jenis | Contoh | Bisa diisi Q&A? |
 |---|---|---|
-| **Agent kerja sendiri** | `ce-work`, `ce-code-review`, `ce-compound` | ✅ Ya — ini jendela Q&A-nya |
-| **Agent nanya balik** | `ce-brainstorm`, `ce-plan` | ❌ Tidak — lo yang harus jawab |
+| **Agent kerja sendiri** | `ce-work`, `ce-code-review`, `ce-compound` | ✅ Ya, ini jendela Q&A-nya |
+| **Agent nanya balik** | `ce-brainstorm`, `ce-plan` | ❌ Tidak, lo yang harus jawab |
 
 Planning dijalankan **live** di sesi ini. Nilainya: audiens melihat *pertanyaan apa yang
-diajukan agent yang bagus* — itu konten, bukan waktu kosong. Tapi jenis nunggunya beda:
+diajukan agent yang bagus*. Itu konten, bukan waktu kosong. Tapi jenis nunggunya beda:
 selama dua segmen itu lo sedang menjawab agent, bukan menjawab audiens. Jangan hitung
 keduanya sebagai jendela Q&A, dan **kunci durasinya** (lihat di bawah).
 
@@ -73,7 +73,7 @@ disebutkan di depan supaya elicitation-nya pendek. Prompt siap paste ada di
 `docs/demo/prompts.md`.
 
 **2. Jawaban sudah diputuskan sebelum naik panggung.**
-Momen terburuk di panggung adalah presenter memikirkan keputusan produk sambil bicara —
+Momen terburuk di panggung adalah presenter memikirkan keputusan produk sambil bicara,
 lambat, dan terlihat ragu. Dari dry run, catat setiap pertanyaan yang muncul dan tulis
 jawabannya satu kalimat. Bacakan, jangan pikirkan.
 
@@ -85,7 +85,7 @@ Audiens tidak akan keberatan; kehabisan waktu di menit 90 jauh lebih mahal.
 
 **4. Jangan biarkan agent memilih ruang lingkup.**
 Checkout saja. Kalau brainstorm mulai menawarkan refund, waiting list, atau seat map,
-tolak di tempat — refund adalah story kedua, dan itu justru buktinya nanti.
+tolak di tempat. Refund adalah story kedua, dan itu justru buktinya nanti.
 
 ---
 
@@ -93,36 +93,36 @@ tolak di tempat — refund adalah story kedua, dan itu justru buktinya nanti.
 
 | Waktu | Durasi | Segmen | Q&A? |
 |---|---|---|---|
-| 00:00 | 8' | **Pembukaan + thesis** — 4 tingkat agent, peta pipeline | — |
-| 00:08 | 8' | **Kondisi awal repo** — AI rules, doc yang sudah disamakan, test yang ada | — |
-| 00:16 | 12' | 🎬 **`/ce-brainstorm`** — live, time box keras | ❌ lo jawab agent |
-| 00:28 | 15' | 🎬 **`/ce-plan`** — live, menghasilkan `docs/plans/checkout.md` | ❌ lo jawab agent |
-| 00:43 | 22' | 🎬 **`/ce-work docs/plans/checkout.md`** — agent implement | ✅ **jendela besar** |
-| 01:05 | 15' | 🎬 **Puncak** — load test → `OVERSELL 300/100` → `/ce-debug` → fix → `100/100` | sedikit |
-| 01:20 | 10' | 🎬 **`/ce-code-review`** — fan-out persona paralel | ✅ **jendela** |
-| 01:30 | 7' | 🎬 **`/ce-compound`** — learning masuk `docs/solutions/` | — |
-| 01:37 | 13' | 🎬 **Story kedua (refund)** — agent pakai pola locking tanpa disuruh | ✅ **jendela** |
+| 00:00 | 8' | **Pembukaan + thesis**, 4 tingkat agent, peta pipeline | - |
+| 00:08 | 8' | **Kondisi awal repo**, AI rules, doc yang sudah disamakan, test yang ada | - |
+| 00:16 | 12' | 🎬 **`/ce-brainstorm`**, live, time box keras | ❌ lo jawab agent |
+| 00:28 | 15' | 🎬 **`/ce-plan`**, live, menghasilkan `docs/plans/checkout.md` | ❌ lo jawab agent |
+| 00:43 | 22' | 🎬 **`/ce-work docs/plans/checkout.md`**, agent implement | ✅ **jendela besar** |
+| 01:05 | 15' | 🎬 **Puncak**. Load test → query probe `202 query` → `/ce-debug` → fix → `2 query` → Schemathesis nemu 500 | sedikit |
+| 01:20 | 10' | 🎬 **ZAP jalan di background** + **`/ce-code-review`** fan-out persona paralel | ✅ **jendela** |
+| 01:30 | 7' | 🎬 **`/ce-compound`**, learning masuk `docs/solutions/` | - |
+| 01:37 | 13' | 🎬 **Story kedua (refund)**, agent pakai pola locking tanpa disuruh | ✅ **jendela** |
 | 01:50 | 8' | **Takeaway + Q&A terbuka** | ✅ |
-| 01:58 | 2' | **Buffer** | — |
+| 01:58 | 2' | **Buffer** | - |
 
-**Total 118 menit + 2 buffer.** Buffer-nya tipis karena planning sekarang live — itulah
+**Total 118 menit + 2 buffer.** Buffer-nya tipis karena planning sekarang live, itulah
 harga yang dibayar. Urutan potong kalau molor:
 
-1. `ce-code-review` (10') — sebut saja hasilnya, jangan dijalankan
+1. `ce-code-review` (10'), sebut saja hasilnya, jangan dijalankan
 2. Segmen planning, lewat parasut `demo/plan-ready`
-3. **Jangan** potong segmen debug, **jangan** potong story kedua — dua itu tesisnya
+3. **Jangan** potong segmen debug, **jangan** potong story kedua, dua itu tesisnya
 
 **Kalau justru kelebihan waktu**, satu beat cadangan yang murah karena
 `api/openapi.yaml` sudah cocok 100% dengan route: jalankan fuzzing API dari spec
 (Schemathesis) dan lihat apakah endpoint checkout yang baru tahan input aneh.
-Jangan dijadwalkan — hanya kalau ada sisa.
+Jangan dijadwalkan, hanya kalau ada sisa.
 
 ---
 
 ## Kenapa CE saja, tanpa BMad
 
 BMad itu upacara sprint: story file, `sprint-status.yaml`, epic. Berguna, tapi bukan yang
-mau dibuktikan hari ini. Compound Engineering itu mekanisme *compounding* — dan
+mau dibuktikan hari ini. Compound Engineering itu mekanisme *compounding*, dan
 `docs/solutions/` persis mekanisme yang jadi tesis sesi ini.
 
 Satu hal yang **tidak boleh** dijalankan di panggung: `/bmad-sprint-run`. Definisinya
@@ -136,14 +136,28 @@ Itu tool buat ditinggal semalaman. Sekali diketik, kendali atas jam dinding hila
 
 ```
 ce-work jalan mulus     → "oh, bisa nulis kode"          (belum meyakinkan)
-Oversell 300/100        → "nah, tetep bisa salah kan"    (skeptis menang)
+Load test AMAN 100/100  → "konteks bagus mencegah bug"   (poin pertama)
+Query probe 202 query   → "tapi ada yang lolos semua"    (skeptis menang)
 ce-debug diagnosa+fix   → "...oke ini beda"              (skeptis goyah)
 ce-compound catat       → "jadi nggak ngulang"           (paham mekanismenya)
 Story 2 pakai pola      → "ini yang namanya compounding" (takeaway kebawa pulang)
 ```
 
-Skeptis di ruangan **harus dikasih menang dulu** di menit 65. Kalau semuanya mulus dari
-awal, mereka pulang dengan pikiran "ah, demo-nya diatur".
+**Dua bug, dua pelajaran berbeda, dan ini yang bikin arc-nya kuat:**
+
+Race condition **dicegah** oleh plan yang bagus. Ini sudah diverifikasi lewat dry run:
+dengan plan yang menyebut transaksi, `UNIQUE (ticket_id)`, dan test konkuren, agent
+menulis `SKIP LOCKED` di percobaan pertama. Load test balas `AMAN, 100 dari 100`.
+Tunjukkan ini, dan bilang apa adanya: *"bug klasik ini tidak terjadi, karena
+konteksnya menyiapkannya."*
+
+N+1 **tidak dicegah apa pun**, dan lolos seluruh test suite. Hasilnya benar, cuma
+mahal. Tidak ada assertion yang gagal, tidak ada yang merah. Itu yang membuatnya
+jadi puncak: penonton baru saja melihat konteks bagus mencegah satu bug, lalu
+melihat bug lain lolos justru karena semua test hijau.
+
+Skeptis di ruangan **harus dikasih menang** di menit 65. Kalau semuanya mulus,
+mereka pulang dengan pikiran "ah, demo-nya diatur".
 
 ---
 
@@ -160,7 +174,7 @@ Untuk oversell, agent bisa fix pakai:
 - Unique constraint di tabel order
 
 **Semuanya jawaban benar.** Siapkan komentar singkat untuk masing-masing, jadi apa pun
-yang keluar lo bisa bilang "nah, dia pilih X — trade-off-nya Y". Itu justru lebih
+yang keluar lo bisa bilang "nah, dia pilih X, dan trade-off-nya Y". Itu justru lebih
 meyakinkan daripada hasil yang seragam.
 
 ---
@@ -180,28 +194,39 @@ ngomong. Taruh terminal di layar yang kelihatan ekor mata lo, atau minta satu or
 kode isyarat waktu agent berhenti.
 
 **3. Ada pertanyaan yang butuh layar.** Itu ngerebut layar dari agent yang lagi jalan.
-Siapkan **parking lot** — tulis di papan, jawab di segmen 01:50.
+Siapkan **parking lot**, tulis di papan, jawab di segmen 01:50.
 
 ---
 
 ## Pre-flight checklist (H-1)
 
-- [ ] `go mod download` selesai — **jangan pernah nunggu download di depan orang**
+- [ ] `go mod download` selesai, **jangan pernah nunggu download di depan orang**
 - [ ] Postgres jalan: `docker compose --env-file .env -f .docker/docker-compose-dev.yml up -d postgres_db`
-      (`--env-file` wajib — compose ada di `.docker/`, tanpa itu interpolasi `${MASTER_DB_*}` kosong)
+      (`--env-file` wajib, compose ada di `.docker/`, tanpa itu interpolasi `${MASTER_DB_*}` kosong)
 - [ ] `go run main.go` sekali: migration keapply, event "Flash Sale Demo" + 100 tiket ke-seed
 - [ ] `curl localhost:8000/api/v1/events` sudah balas `available_tickets: 100`
 - [ ] `./scripts/loadtest/reset.sh` jalan, lalu `go run ./scripts/loadtest -n 300 -c 80`
-      balas `BELUM ADA YANG TERJUAL` (404) — itu kondisi awal yang benar
-- [ ] `RATE_LIMIT_RPS=1000` di `.env` — di 100, rate limiter nolak duluan dan
+      balas `BELUM ADA YANG TERJUAL` (404), itu kondisi awal yang benar
+- [ ] `go run ./scripts/nplusone` balas `N+1, query ikut tumbuh` dengan
+      `200 event -> 202 query`. Kalau balas AMAN, bugnya sudah keburu diperbaiki
+- [ ] `go run ./scripts/smoke` balas `SEHAT, 9 dari 9 cek lolos`
+- [ ] `./scripts/apitest/run.sh` nemu 4 temuan termasuk 500 di `/events/{id}`.
+      Kalau balas AMAN, bahan segmen 4c hilang
+- [ ] `./scripts/security/run.sh` balas `WARN-NEW: 2, FAIL-NEW: 0, PASS: 117`
+- [ ] `schema_migrations` di database dev ada di versi **6**, bukan 7. Dry run
+      `demo/work-ready` menaikkannya ke 7 dan `main` jadi tidak bisa boot sama
+      sekali. Perintah pemulihannya ada di `docs/demo/setup.md`
+- [ ] `docker image inspect ghcr.io/zaproxy/zaproxy:stable` sukses (~1,1 GB)
+- [ ] `uvx --from schemathesis st --version` balas cepat, artinya sudah ter-cache
+- [ ] `RATE_LIMIT_RPS=1000` di `.env`, di 100, rate limiter nolak duluan dan
       **oversell-nya nggak akan pernah muncul**
 - [ ] Testcontainers siap: `docker image inspect postgres:16-alpine` sukses, dan
-      modul `testcontainers-go` sudah ada di module cache — dua-duanya operasi
+      modul `testcontainers-go` sudah ada di module cache, dua-duanya operasi
       jaringan yang tidak boleh terjadi di panggung
 - [ ] Seed prompt brainstorm + plan ada di `docs/demo/prompts.md`, tinggal paste
 - [ ] Daftar pertanyaan yang muncul saat dry run + jawaban satu kalimat masing-masing
 - [ ] Branch `demo/plan-ready` berisi `docs/plans/checkout.md` hasil dry run (parasut)
-- [ ] Semua prompt ada di file teks, tinggal paste — ngetik prompt live itu dead air
+- [ ] Semua prompt ada di file teks, tinggal paste, ngetik prompt live itu dead air
 - [ ] Branch parachute `demo/final` yang sudah jadi dan sudah diverifikasi
 - [ ] **Dry run persis sekali** dengan prompt yang sama, catat menitnya per segmen
 - [ ] Video cadangan full run direkam semalam sebelumnya
@@ -211,13 +236,13 @@ Siapkan **parking lot** — tulis di papan, jawab di segmen 01:50.
 
 | Skill | Perilaku yang bisa bikin kaget |
 |---|---|
-| `ce-work` | Punya *shipping tail* — bisa commit/push/PR sendiri. Pakai `mode:return-to-caller` kalau nggak mau |
+| `ce-work` | Punya *shipping tail*, bisa commit/push/PR sendiri. Pakai `mode:return-to-caller` kalau nggak mau |
 | `ce-code-review` | Mengirim kode ke peer model lain (*cross-model egress*). Repo publik jadi aman, tapi ini segmen paling lambat |
 | `ce-compound` | Ikut commit `docs/solutions/`. Justru bagus: `git log` jadi bukti di layar |
 
 ## Pas jalan
 
-- Pas agent mikir — **itu slot lo**, bukan diem. Selain Q&A, siapkan 3 poin isian:
+- Pas agent mikir, **itu slot lo**, bukan diem. Selain Q&A, siapkan 3 poin isian:
   1. Kenapa `docs/00_AI_CRITICAL_RULES.md` ada dan apa isinya
   2. Kenapa plan file lebih bagus daripada prompt panjang
   3. Kenapa review pakai model lain itu penting
@@ -233,13 +258,14 @@ Siapkan **parking lot** — tulis di papan, jawab di segmen 01:50.
 |---|---|
 | Internet mati | Video cadangan, narasikan langsung |
 | Agent stuck > 3 attempt | `git checkout demo/final`, bahas kenapa gagal |
-| Load test nggak nunjukkan oversell | Naikkan `-n` dan `-c`, cek `RATE_LIMIT_RPS`, atau tambah `time.Sleep` di service (dan **bilang** ke audiens kalau lo lakuin itu) |
+| Query probe nggak nunjukkan N+1 | Naikkan `-sizes`, mis. `10,500`. Kemiringannya yang penting, bukan angka absolutnya |
+| Load test justru oversell | Bagus, pakai itu sebagai puncak, N+1 jadi babak kedua |
 | `ce-code-review` kelamaan | Potong, lanjut ke `ce-compound` |
 | Kehabisan waktu | Potong `ce-code-review` dulu, baru buffer. Jangan potong story kedua |
-| Agent nge-fix duluan sebelum load test | Bagus — tunjukkan test-nya, bahas kenapa dia antisipasi |
+| Agent nge-fix duluan sebelum load test | Bagus, tunjukkan test-nya, bahas kenapa dia antisipasi |
 | Nggak ada yang nanya di jendela Q&A | Pakai 4 pertanyaan pancingan di atas |
 | `ce-brainstorm`/`ce-plan` lewat time box | `git checkout demo/plan-ready`, bilang apa adanya, lanjut |
-| Brainstorm nawarin scope lain (refund, seat map) | Tolak di tempat — refund itu story kedua |
+| Brainstorm nawarin scope lain (refund, seat map) | Tolak di tempat, refund itu story kedua |
 | Agent nanya hal yang belum lo putuskan | Jawab dari daftar jawaban hasil dry run, jangan mikir di panggung |
 
 ---
@@ -249,4 +275,4 @@ Siapkan **parking lot** — tulis di papan, jawab di segmen 01:50.
 1. **Konteks > prompt.** Dokumentasi dan aturan di repo yang bikin outputnya konsisten
 2. **Agent harus bisa mengukur.** Test dan load test yang bikin dia bisa mandiri, bukan modelnya
 3. **Learning di-commit.** `docs/solutions/` bikin kesalahan cuma terjadi sekali
-4. **Review tetap manusia.** Yang berubah levelnya — dari cek sintaks jadi cek keputusan
+4. **Review tetap manusia.** Yang berubah levelnya, dari cek sintaks jadi cek keputusan

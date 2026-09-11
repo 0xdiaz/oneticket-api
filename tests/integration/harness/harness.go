@@ -49,7 +49,11 @@ func DSN() string { return dsn }
 // RunMain starts Postgres, applies migrations, wires database.DB, runs the
 // package's tests, then tears the container down. It returns the exit code so
 // the caller can hand it to os.Exit.
-func RunMain(m *testing.M) int {
+//
+// Each before hook runs after the schema is in place and before any test does.
+// The e2e package uses one to stand up an HTTP server, which cannot be built
+// any earlier: its handlers resolve repositories that need database.DB wired.
+func RunMain(m *testing.M, before ...func() error) int {
 	ctx := context.Background()
 
 	setTestConfig()
@@ -85,6 +89,13 @@ func RunMain(m *testing.M) int {
 	if err := applyMigrations(); err != nil {
 		fmt.Fprintf(os.Stderr, "harness: migrate: %v\n", err)
 		return 1
+	}
+
+	for _, hook := range before {
+		if err := hook(); err != nil {
+			fmt.Fprintf(os.Stderr, "harness: before hook: %v\n", err)
+			return 1
+		}
 	}
 
 	return m.Run()
