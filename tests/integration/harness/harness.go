@@ -86,6 +86,11 @@ func RunMain(m *testing.M, before ...func() error) int {
 		return 1
 	}
 
+	if err := capPool(); err != nil {
+		fmt.Fprintf(os.Stderr, "harness: cap pool: %v\n", err)
+		return 1
+	}
+
 	if err := applyMigrations(); err != nil {
 		fmt.Fprintf(os.Stderr, "harness: migrate: %v\n", err)
 		return 1
@@ -99,6 +104,24 @@ func RunMain(m *testing.M, before ...func() error) int {
 	}
 
 	return m.Run()
+}
+
+// capPool bounds the connection pool for tests.
+//
+// Nothing in the application sets a limit -- database.DbConnection never calls
+// SetMaxOpenConns -- so database/sql would open connections without bound.
+// postgres:16-alpine ships max_connections=100, so a concurrency test that
+// releases a few hundred simultaneous transactions dies with "sorry, too many
+// clients already" instead of with the assertion it was written for, and the
+// failure reads like a bug in the code under test.
+func capPool() error {
+	sqlDB, err := database.GetDB().DB()
+	if err != nil {
+		return fmt.Errorf("underlying sql.DB: %w", err)
+	}
+	sqlDB.SetMaxOpenConns(50)
+	sqlDB.SetMaxIdleConns(10)
+	return nil
 }
 
 // applyMigrations runs the versioned SQL against the container.
@@ -171,12 +194,16 @@ func setTestConfig() {
 // Reset empties every table the application owns, leaving the schema in place.
 // Call it at the start of a test that needs to control the data completely.
 //
+// purchases is listed explicitly even though truncating tickets already
+// cascades into it today. The list is the readable statement of what gets
+// cleared, and it stays correct on the day the foreign key changes.
+//
 // schema_migrations is deliberately untouched: truncating it would make the
 // migrator think the database is empty.
 func Reset(t *testing.T) {
 	t.Helper()
 
-	tables := []string{"tickets", "events", "refresh_tokens", "users", "examples"}
+	tables := []string{"purchases", "tickets", "events", "refresh_tokens", "users", "examples"}
 	for _, table := range tables {
 		if err := database.DB.Exec("TRUNCATE TABLE " + table + " RESTART IDENTITY CASCADE").Error; err != nil {
 			t.Fatalf("harness: truncate %s: %v", table, err)

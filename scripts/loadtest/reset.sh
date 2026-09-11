@@ -18,14 +18,16 @@ if ! docker ps --format '{{.Names}}' | grep -qx "$CONTAINER"; then
   exit 1
 fi
 
-# Drop anything the checkout flow created, if those tables exist yet, then put
-# every ticket back to available. The DO block keeps this working before the
-# orders table has been designed.
+# Drop anything the checkout flow created, then put every ticket back to
+# available. Order matters: purchases.ticket_id is UNIQUE, so leaving those
+# rows behind makes every re-claim fail on the unique constraint and the next
+# run reports "nothing sold" instead of "no oversell". The DO block keeps this
+# script working against a database migrated before 000007.
 docker exec -i "$CONTAINER" psql -U "$DB_USER" -d "$DB_NAME" -q <<'SQL'
 DO $$
 BEGIN
-  IF to_regclass('public.orders') IS NOT NULL THEN
-    EXECUTE 'TRUNCATE TABLE orders CASCADE';
+  IF to_regclass('public.purchases') IS NOT NULL THEN
+    EXECUTE 'TRUNCATE TABLE purchases CASCADE';
   END IF;
 END
 $$;
