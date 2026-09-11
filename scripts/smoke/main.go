@@ -53,6 +53,7 @@ func main() {
 		{"route terlindungi menolak tanpa token", (*client).checkProtectedRejects},
 		{"route terlindungi menerima token", (*client).checkProtectedAccepts},
 		{"route tak dikenal menjawab 404", (*client).checkUnknownRoute},
+		{"checkout menolak tanpa token", (*client).checkPurchaseRejectsAnonymous},
 	}
 
 	printHeader(c.base, len(checks))
@@ -87,6 +88,24 @@ type client struct {
 // get performs a GET and returns status plus body.
 func (c *client) get(path, token string) (int, []byte, error) {
 	req, err := http.NewRequest(http.MethodGet, c.base+path, nil)
+	if err != nil {
+		return 0, nil, err
+	}
+	if token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return 0, nil, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	return resp.StatusCode, body, nil
+}
+
+// post performs a bodyless POST and returns status plus body.
+func (c *client) post(path, token string) (int, []byte, error) {
+	req, err := http.NewRequest(http.MethodPost, c.base+path, nil)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -237,6 +256,28 @@ func (c *client) checkUnknownRoute() error {
 	}
 	if status != http.StatusNotFound {
 		return fmt.Errorf("route tak dikenal menjawab %d, bukan 404", status)
+	}
+	return nil
+}
+
+// checkPurchaseRejectsAnonymous proves checkout is alive without buying
+// anything. A 401 means two things at once: the route is registered (an
+// unregistered one answers 404) and the guard is attached to it (an
+// unguarded one would reach the handler).
+//
+// It is deliberately the anonymous case. A check that actually bought a
+// ticket would consume real inventory every time smoke ran, and a smoke
+// check must not write.
+func (c *client) checkPurchaseRejectsAnonymous() error {
+	status, _, err := c.post("/api/v1/events/1/purchase", "")
+	if err != nil {
+		return err
+	}
+	if status == http.StatusNotFound {
+		return fmt.Errorf("checkout menjawab 404: route-nya tidak terdaftar")
+	}
+	if status != http.StatusUnauthorized {
+		return fmt.Errorf("checkout tanpa token menjawab %d, bukan 401. Guard-nya tidak menjaga", status)
 	}
 	return nil
 }
