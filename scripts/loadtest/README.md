@@ -6,7 +6,7 @@ pass/fail rather than a wall of numbers.
 
 ## Why it exists
 
-The checkout endpoint is **not implemented** in this repository — it is built
+The checkout endpoint is **not implemented** in this repository. It is built
 live during the sharing session (see [`docs/DEMO_RUNSHEET.md`](../../docs/DEMO_RUNSHEET.md)).
 This tool is written to survive that: it works before checkout exists, against
 a naive first implementation, and against the fixed one.
@@ -14,8 +14,8 @@ a naive first implementation, and against the fixed one.
 | State | Output | Exit |
 |---|---|---|
 | No checkout endpoint yet | `BELUM ADA YANG TERJUAL` (404s) | 3 |
-| Naive read-then-write | `OVERSELL — terjual 300 dari 100 tiket` | 1 |
-| Correct locking | `AMAN — terjual 100 dari 100 tiket` | 0 |
+| Naive read-then-write | `OVERSELL, terjual 300 dari 100 tiket` | 1 |
+| Correct locking | `AMAN, terjual 100 dari 100 tiket` | 0 |
 
 All three were verified before this was committed.
 
@@ -33,7 +33,7 @@ go run main.go
 go run ./scripts/loadtest -n 300 -c 80
 ```
 
-Reset between every attempt — the tool reports availability before and after,
+Reset between every attempt. The tool reports availability before and after,
 so a half-sold event makes the numbers meaningless.
 
 ## Flags
@@ -69,7 +69,7 @@ went to more than one buyer.
 ## Notes for the demo
 
 - Every worker blocks on one gate and is released together. A race needs
-  simultaneity, not just volume — trickling 300 requests in sequence will not
+  simultaneity, not just volume: trickling 300 requests in sequence will not
   reproduce it.
 - `RATE_LIMIT_RPS` in `.env` is set high on purpose. At the default 100 the
   rate limiter rejects the flood first and the oversell never appears, which
