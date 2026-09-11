@@ -232,6 +232,33 @@ components:
           type: boolean
           description: Whether sale_starts_at has passed.
 
+    PurchaseResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identifier of the purchase record.
+        event_id:
+          type: integer
+          format: int64
+        ticket_id:
+          type: integer
+          format: int64
+        ticket_code:
+          type: string
+          description: Seat code, unique within one event.
+        price_cents:
+          type: integer
+          format: int64
+          description: >-
+            Price paid in the smallest currency unit, snapshotted at the moment
+            of sale. An integer, never a float. Repricing the event later does
+            not change it.
+        purchased_at:
+          type: string
+          format: date-time
+
 paths:
   /health:
     get:
@@ -626,6 +653,74 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponse'
         '500':
           description: Failed to get event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /api/v1/events/{id}/purchase:
+    post:
+      summary: Buy one ticket for an event
+      description: >-
+        Claims one available ticket of the event for the authenticated user and
+        records ownership. Exactly one ticket per request: there is no request
+        body, so buying several at once cannot be expressed. Requires a Bearer
+        token; the buyer is always the token holder.
+      tags:
+        - Events
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Event id
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 2147483647
+      responses:
+        '201':
+          description: Ticket purchased successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PurchaseResponse'
+        '400':
+          description: Invalid event id (not a number, or outside the range of the id column)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '401':
+          description: Unauthorized (missing or invalid token)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '409':
+          description: >-
+            The event's state conflicts with the request: either it is sold out
+            or its sale has not started yet. The two are told apart by the
+            message, not by the status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '500':
+          description: Failed to purchase ticket
           content:
             application/json:
               schema:

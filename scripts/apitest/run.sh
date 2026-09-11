@@ -27,9 +27,17 @@ SEED="${SEED-233638011671589819716048247251880411702}"
 # Read-only by default. The write endpoints register users, revoke sessions and
 # mail password resets, so fuzzing them needs a throwaway database rather than
 # whatever the machine happens to be pointing at. Pass --all to include them.
+#
+# The checkout path matches INCLUDE too, and it sells real tickets. It is
+# excluded separately rather than by narrowing INCLUDE, because INCLUDE is also
+# what carries the fuzzer to GET /api/v1/events/{id} -- the endpoint whose
+# out-of-range-id 500 this tool is meant to keep finding. Narrowing the include
+# pattern would silence that finding as a side effect.
 INCLUDE='^/api/v1/events'
+EXCLUDE='/purchase$'
 if [[ "${1:-}" == "--all" ]]; then
   INCLUDE='.'
+  EXCLUDE=''
   echo "MODE: seluruh spec, termasuk endpoint yang menulis. Pastikan database ini sekali pakai."
   shift
 fi
@@ -48,15 +56,23 @@ fi
 
 echo "Spec   : $SPEC"
 echo "Target : $BASE_URL"
-echo "Scope  : $INCLUDE"
+if [[ -n "$EXCLUDE" ]]; then
+  echo "Scope  : $INCLUDE (kecuali $EXCLUDE)"
+else
+  echo "Scope  : $INCLUDE"
+fi
 echo
 
 SEED_ARG=()
 [[ -n "$SEED" ]] && SEED_ARG=(--seed "$SEED")
 
+EXCLUDE_ARG=()
+[[ -n "$EXCLUDE" ]] && EXCLUDE_ARG=(--exclude-path-regex "$EXCLUDE")
+
 uvx --from schemathesis st run "$SPEC" \
   --url "$BASE_URL" \
   --include-path-regex "$INCLUDE" \
+  "${EXCLUDE_ARG[@]}" \
   --max-examples "$MAX_EXAMPLES" \
   "${SEED_ARG[@]}" \
   "$@"
