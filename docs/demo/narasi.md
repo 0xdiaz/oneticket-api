@@ -38,14 +38,15 @@ Human orchestrator multi-agent -> manusia mengendalikan banyak agent
 AI orchestrator multi-agent    -> agent mengendalikan agent
 ```
 
-> "Hari ini kita di tingkat satu, sedikit menyentuh dua. Bukan karena tingkat empat
-> mustahil, tapi karena yang menentukan hasil bukan jumlah agentnya."
+> "Hari ini kita main di tingkat satu, nyenggol dikit tingkat dua. Bukan karena yang
+> di bawah nggak bisa — tapi karena yang nentuin hasil itu bukan berapa banyak
+> agentnya."
 
 Salah paham kedua: orang mengira demo AI selalu diatur. Dahului tuduhannya:
 
-> "Nanti ada satu bug yang muncul di depan kalian. Itu bukan bug yang saya tanam —
-> implementasi yang wajar memang menghasilkan bug itu, dan saya akan tunjukkan kenapa
-> test-nya semua hijau saat bug itu ada."
+> "Nanti bakal ada bug yang muncul di depan kalian. Itu bukan bug yang saya tanam ya.
+> Implementasi yang wajar-wajar aja emang ngasilin bug itu — dan nanti saya tunjukin
+> kenapa semua test-nya hijau padahal bugnya ada."
 
 Lalu peta pipeline, dan tunjuk bahwa **semua kotaknya dijalankan hari ini**:
 
@@ -53,8 +54,8 @@ Lalu peta pipeline, dan tunjuk bahwa **semua kotaknya dijalankan hari ini**:
 Brainstorm -> Planning -> Work + Verifikasi -> Review -> Compound
 ```
 
-> "Bukan potongan. Satu putaran penuh, dari belum ada fitur sampai pelajarannya
-> tercatat."
+> "Jadi bukan cuplikan. Satu putaran penuh — dari belum ada fiturnya sampai
+> pelajarannya kecatat di repo."
 
 ---
 
@@ -71,8 +72,8 @@ wc -l CLAUDE.md docs/00_AI_CRITICAL_RULES.md docs/MODULE_GUIDE.md
 ls docs/
 ```
 
-> "Ini yang dibaca agent sebelum menulis baris pertama. Bukan prompt saya yang bagus —
-> reponya yang sudah menjelaskan dirinya sendiri."
+> "Nah, ini yang dibaca agent sebelum dia nulis satu baris pun. Jadi bukan prompt saya
+> yang jago — reponya yang udah bisa ngejelasin dirinya sendiri."
 
 Buka `docs/00_AI_CRITICAL_RULES.md`, scroll bagian *Quick Decision Tree*. Lalu buka satu
 slice nyata — `internal/app/services/event_service.go` — dan tunjukkan komentar ini:
@@ -83,18 +84,19 @@ slice nyata — `internal/app/services/event_service.go` — dan tunjukkan komen
 // it is the honest starting point for a later performance pass.
 ```
 
-> "Perhatikan baris ini. Saya sengaja tinggalkan, dan sengaja dikomentari. Ingat ini,
-> nanti kita balik ke sini."
+> "Perhatiin baris ini. Ini sengaja saya tinggal, dan sengaja dikasih komentar. Inget
+> ya — nanti kita balik ke sini."
 
 **Itu menanam puncaknya.** Penonton akan mengenali momennya sendiri nanti — jauh lebih
 kuat daripada lo yang mengumumkannya.
 
 Tutup dengan kejujuran yang membangun kepercayaan:
 
-> "Repo ini tidak selalu begini. Waktu saya mulai, dokumentasinya menggambarkan
-> arsitektur yang tidak ada di kodenya — 15 file, sepuluh ribu baris, semuanya
-> menyuruh agent membangun di direktori yang tidak pernah dibuat. Yang kalian lihat
-> ini hasil membereskan itu dulu."
+> "Repo ini nggak dari dulu begini. Waktu saya mulai, dokumentasinya ngegambarin
+> arsitektur yang nggak ada di kodenya. Lima belas file, sepuluh ribu baris, semuanya
+> nyuruh agent bikin di folder yang nggak pernah dibuat.
+>
+> Jadi yang kalian lihat sekarang itu hasil beresin itu dulu."
 
 ---
 
@@ -104,28 +106,28 @@ Tutup dengan kejujuran yang membangun kepercayaan:
 
 Sebelum paste, katakan apa yang akan terjadi:
 
-> "Saya sudah tahu apa yang mau dibangun. Yang saya belum putuskan cuma tiga hal. Lihat
-> apakah agent ini menanyakan tiga itu, atau malah menawarkan fitur yang tidak saya
-> minta."
+> "Saya udah tau mau bangun apa. Yang belum saya putusin cuma tiga hal. Coba lihat —
+> dia nanya tiga itu, atau malah nawarin fitur yang nggak saya minta."
 
 Paste prompt [1]. Sambil dia berpikir:
 
-> "Prompt ini panjang bukan karena saya suka mengetik. Semua yang **sudah** diputuskan
-> saya sebut di depan, supaya dia tidak menghabiskan giliran menanyakan hal yang
-> jawabannya sudah ada. Yang saya sisakan cuma tiga."
+> "Prompt-nya panjang bukan karena saya hobi ngetik. Semua yang **udah** diputusin saya
+> sebutin di depan, biar dia nggak buang giliran nanyain hal yang jawabannya udah ada.
+> Yang saya sisain cuma tiga."
 
 **Ketika pertanyaan muncul, baca jawabannya dari `answers.md`.** Jangan berpikir di
 panggung — itu lambat dan terlihat ragu.
 
 Pertanyaan ketiga adalah yang penting. Jawabannya:
 
-> "Itu keputusan implementasi. Yang saya kunci hasilnya — tidak boleh oversell — plus
-> test yang membuktikannya."
+> "Itu keputusan implementasi. Yang saya kunci hasilnya — nggak boleh oversell — plus
+> test yang buktiin itu."
 
 Lalu jelaskan kenapa, karena ini pelajaran tersendiri:
 
-> "Kalau saya jawab 'pakai row lock', saya baru saja memutuskan hal teknis di dokumen
-> requirement. Requirement itu soal apa yang harus benar, bukan bagaimana caranya."
+> "Kalau tadi saya jawab 'pakai row lock', berarti saya baru aja mutusin hal teknis di
+> dokumen requirement. Padahal requirement itu soal apa yang harus bener — bukan
+> gimana caranya."
 
 **Kalau lewat 12 menit:** hentikan, `git checkout demo/plan-ready`, bilang apa adanya.
 
@@ -137,15 +139,16 @@ Lalu jelaskan kenapa, karena ini pelajaran tersendiri:
 
 Paste prompt [2]. Sambil menunggu, ini slot terbaik untuk poin TDD:
 
-> "Perhatikan yang saya minta: task menulis test harus **sebelum** task implementasi,
-> dan tiap test disebut satu per satu. Kalau tidak diminta begitu, yang keluar biasanya
-> satu task bernama 'write tests' di paling bawah — dan itu bukan TDD, itu test yang
-> ditempel belakangan."
+> "Perhatiin yang saya minta: task nulis test harus **sebelum** task implementasi, dan
+> tiap test-nya disebut satu-satu. Kalau nggak diminta gitu, biasanya yang keluar satu
+> task namanya 'write tests' di paling bawah. Itu bukan TDD — itu test yang ditempel
+> belakangan."
 
 Setelah plan jadi, buka dan tunjuk tabel Requirements Trace:
 
-> "Tiap requirement punya unit yang memenuhinya dan test yang membuktikannya. Baris tanpa
-> unit berarti plan-nya belum selesai. Jadi tabel ini bukan dokumentasi — itu alat cek."
+> "Tiap requirement ada unit yang ngerjain dan test yang buktiin. Kalau ada baris yang
+> kosong unitnya, berarti plan-nya belum kelar. Jadi tabel ini bukan dokumentasi — ini
+> alat cek."
 
 ---
 
@@ -155,8 +158,8 @@ Setelah plan jadi, buka dan tunjuk tabel Requirements Trace:
 
 Paste prompt [3]. Katakan sekali di depan:
 
-> "Sekarang dia kerja. Ini akan makan dua puluh menitan, jadi mari kita pakai waktunya —
-> tanya apa saja."
+> "Oke, sekarang dia kerja. Ini makan dua puluh menitan, jadi mending kita pakai
+> waktunya — silakan tanya apa aja."
 
 **Kalau tidak ada yang bertanya**, pancing dengan salah satu dari empat ini. Yang
 terakhir paling ampuh:
@@ -169,10 +172,12 @@ terakhir paling ampuh:
 Jawaban untuk yang keempat, karena ini pertanyaan yang paling sering ditanya dan paling
 berguna dijawab dengan baik:
 
-> "Jangan mulai dari menulis dokumentasi. Mulai dari satu slice yang benar — satu fitur,
-> ditulis serapi mungkin, dengan test yang jujur. Lalu tunjuk itu di prompt: 'ikuti pola
-> di sini'. Satu contoh nyata lebih kuat daripada lima ribu baris standar. Dokumentasi
-> menyusul dari situ, bukan mendahuluinya."
+> "Jangan mulai dari nulis dokumentasi. Mulai dari satu slice yang bener aja — satu
+> fitur, ditulis serapi mungkin, test-nya jujur. Terus tinggal tunjuk itu di prompt:
+> 'ikutin pola yang di sini'.
+>
+> Satu contoh nyata itu jauh lebih kuat daripada lima ribu baris standar. Dokumentasinya
+> nyusul belakangan, bukan duluan."
 
 **Minta satu orang memberi kode isyarat waktu agent berhenti.** Lo tidak akan sadar
 sendiri karena sedang bicara.
@@ -195,12 +200,13 @@ Layar: `AMAN — terjual 100 dari 100 tiket`.
 Di sini ada godaan untuk buru-buru lewat. Jangan. **Ini poin pertama lo, dan tidak
 terlihat seperti poin kalau tidak dijelaskan:**
 
-> "Ini race condition klasik. Seratus tiket, tiga ratus orang menekan tombol bersamaan.
-> Implementasi naif akan menjual tiga ratus. Kalian baru saja melihatnya tidak terjadi.
+> "Ini race condition klasik ya. Seratus tiket, tiga ratus orang mencet tombol
+> barengan. Implementasi naif bakal jual tiga ratus. Dan barusan kalian lihat itu
+> nggak kejadian.
 >
-> Bukan karena modelnya pintar. Karena plan-nya menyebut transaksi, menyebut unique
-> constraint, dan yang paling menentukan — test konkuren itu ada di plan, terlihat oleh
-> agent sebelum dia menulis implementasinya. Dia tahu akan diuji seperti apa."
+> Bukan karena modelnya pinter. Tapi karena plan-nya nyebut transaksi, nyebut unique
+> constraint, dan yang paling nentuin — test konkurennya udah ada di plan, kelihatan
+> sama dia sebelum dia nulis implementasinya. Dia udah tau bakal diuji kayak gimana."
 
 Tunjukkan barisnya:
 
@@ -208,8 +214,8 @@ Tunjukkan barisnya:
 grep -A3 'SKIP LOCKED' internal/domain/repositories/order_repo.go
 ```
 
-> "Konteks yang bagus tidak membuat agent lebih pintar. Konteks yang bagus membuat
-> jawaban yang benar jadi jawaban yang paling jelas."
+> "Jadi konteks yang bagus itu nggak bikin agent-nya tambah pinter. Dia bikin jawaban
+> yang bener jadi jawaban yang paling kelihatan."
 
 ### 4b — Bug yang *lolos semua test*
 
@@ -229,20 +235,21 @@ go test ./tests/... 2>&1 | tail -6
 
 Semua hijau.
 
-> "Dua ratus dua query untuk satu request. Dan seluruh test hijau.
+> "Dua ratus dua query buat satu request. Dan semua test-nya hijau.
 >
-> Karena hasilnya **benar**. Cuma mahal. Tidak ada assertion yang gagal, tidak ada error
-> di log, tidak ada yang merah. Test menguji kebenaran, bukan biaya.
+> Kenapa? Karena hasilnya **bener**. Cuma mahal. Nggak ada assertion yang gagal, nggak
+> ada error di log, nggak ada yang merah. Test itu nguji kebenaran, bukan biaya.
 >
-> Ini kelas bug yang berbeda dari yang tadi. Yang tadi dicegah oleh konteks yang bagus.
-> Yang ini tidak dicegah apa pun — dan tidak akan ketahuan sampai ada yang mengukur."
+> Nah ini kelas bug yang beda dari yang tadi. Yang tadi kecegah sama konteks yang bagus.
+> Yang ini nggak kecegah apa-apa — dan nggak bakal ketahuan sampai ada yang ngukur."
 
 Paste prompt `/ce-debug`. Sambil dia bekerja:
 
-> "Perhatikan saya tidak menyuruh dia memperbaiki. Saya menyuruh dia mereproduksi dulu —
-> test yang gagal karena biayanya, bukan karena hasilnya — lalu menyebutkan opsi
-> perbaikan beserta trade-off-nya sebelum memilih. Bagian menimbang itu yang biasanya
-> tidak kelihatan."
+> "Perhatiin, saya nggak nyuruh dia benerin. Saya nyuruh dia reproduce dulu — bikin
+> test yang gagal karena biayanya, bukan karena hasilnya. Terus sebutin opsi
+> perbaikannya beserta trade-off-nya, baru milih.
+>
+> Bagian nimbang-nimbang itu yang biasanya nggak kelihatan."
 
 Setelah fix:
 
@@ -263,8 +270,8 @@ Biarkan angka itu menggantung sebentar. Jangan langsung lanjut.
 **Tujuan.** Menunjukkan review yang berjalan paralel dan lintas model.
 
 > "Yang jalan sekarang beberapa persona sekaligus, plus satu peer di model lain.
-> Alasannya sederhana: model yang menulis kode adalah pembaca terburuk untuk kode itu.
-> Dia sudah yakin kodenya benar — dia baru saja meyakinkan dirinya sendiri."
+> Alasannya sederhana: model yang nulis kodenya itu pembaca paling jelek buat kode itu.
+> Dia udah yakin kodenya bener — kan dia baru aja ngeyakinin dirinya sendiri."
 
 Kandidat pertama yang dipotong kalau waktu mepet. Kalau dipotong, cukup katakan apa yang
 biasanya dia temukan.
@@ -282,11 +289,11 @@ ls docs/solutions/
 git log --oneline -5
 ```
 
-> "Pelajarannya tadi sekarang ada di repo, dan sudah ter-commit. Bukan di kepala saya,
-> bukan di catatan pribadi, bukan di Slack yang hilang dalam dua minggu."
+> "Pelajaran yang tadi sekarang udah ada di repo, dan udah ke-commit. Bukan di kepala
+> saya, bukan di catatan pribadi, bukan di Slack yang dua minggu lagi ilang."
 
-> "Ini bagian yang biasanya dilewat, dan ini justru satu-satunya bagian yang membuat
-> putaran berikutnya lebih murah dari putaran ini."
+> "Ini bagian yang biasanya dilewat. Padahal justru ini satu-satunya yang bikin putaran
+> berikutnya lebih murah dari yang barusan."
 
 ---
 
@@ -296,16 +303,16 @@ git log --oneline -5
 
 Paste prompt [7]. Sebelum agent mulai, buat prediksi yang bisa jatuh:
 
-> "Saya tidak akan menyebut locking sama sekali di prompt ini. Kalau nanti dia memakai
-> pola yang sama dengan story pertama, itu karena dia membaca `docs/solutions/` — bukan
-> karena saya menyuruhnya."
+> "Di prompt ini saya sama sekali nggak nyebut locking. Kalau nanti dia pakai pola yang
+> sama kayak story pertama, itu karena dia baca `docs/solutions/` — bukan karena saya
+> suruh."
 
 Membuat prediksi di depan itu berisiko, dan justru itu yang membuatnya bernilai. Kalau
 meleset, katakan meleset — penonton akan lebih percaya semua yang lain.
 
 Kalau tepat, tunjukkan berdampingan: entri `docs/solutions/` di kiri, kode baru di kanan.
 
-> "Ini yang dimaksud compound. Bukan kodenya yang menumpuk. Pelajarannya."
+> "Nah, ini yang dimaksud compound. Yang numpuk bukan kodenya — tapi pelajarannya."
 
 ---
 
@@ -325,13 +332,14 @@ Empat hal, jangan lebih:
 Lalu tutup dengan yang paling jujur, karena ini yang membedakan sesi lo dari konten
 "AI bikin saya 10x lebih cepat":
 
-> "Yang kalian lihat hari ini bukan agentnya yang hebat. Sebagian besar kerja saya minggu
-> ini bukan menulis prompt — tapi membereskan dokumentasi supaya cocok dengan kodenya,
-> membetulkan tooling yang rusak, dan membuat dua alat ukur. Setelah itu, agentnya jadi
-> berguna.
+> "Yang kalian lihat hari ini bukan agent-nya yang hebat.
 >
-> Urutannya penting. Kalau repo kalian belum menjelaskan dirinya sendiri, menambah agent
-> cuma mempercepat pembuatan kekacauan."
+> Sebagian besar kerja saya minggu ini bukan nulis prompt. Tapi beresin dokumentasi biar
+> cocok sama kodenya, benerin tooling yang rusak, dan bikin dua alat ukur. Habis itu
+> baru agent-nya kepake.
+>
+> Dan urutannya penting. Kalau repo kalian belum bisa ngejelasin dirinya sendiri,
+> nambahin agent itu cuma bikin berantakannya lebih cepet."
 
 ---
 
@@ -340,9 +348,8 @@ Lalu tutup dengan yang paling jujur, karena ini yang membedakan sesi lo dari kon
 Pertanyaan ini hampir pasti datang, dan jawabannya memperkuat tesis lo — jadi jangan
 defensif. Sebut sendiri di pembukaan, satu kalimat setelah empat tingkat agent:
 
-> "Tingkat tiga dan empat itu ada, dan di Claude Code namanya agent teams. Hari ini
-> sengaja tidak dipakai. Nanti saya jelaskan kenapa, dan alasannya bukan karena belum
-> sempat."
+> "Tingkat tiga sama empat itu ada, di Claude Code namanya agent teams. Hari ini sengaja
+> nggak dipakai — nanti saya jelasin kenapa. Bukan karena belum sempet nyoba ya."
 
 Lalu saat ditanya, tiga alasan. Yang ketiga yang paling penting.
 
@@ -360,11 +367,12 @@ dinyalakan seminggu sebelum tampil.
 
 **Tiga — lima Claude punya blind spot yang sama.** Ini yang benar-benar penting:
 
-> "Teammate itu instance Claude Code. Model yang sama, cara salah yang sama, cuma lebih
-> banyak. Lima agent yang saling berdebat tetap lima agent dengan asumsi yang mirip.
+> "Teammate itu kan instance Claude Code juga. Model yang sama, salahnya dengan cara
+> yang sama, cuma lebih banyak. Lima agent debat-debatan ya tetep lima agent dengan
+> asumsi yang mirip-mirip.
 >
-> Yang saya butuhkan bukan lebih banyak agent — tapi satu yang **beda cara salahnya**.
-> Makanya review di sini lewat model lain, Codex, bukan lewat lebih banyak Claude."
+> Yang saya butuh bukan agent-nya lebih banyak — tapi satu yang **salahnya beda**.
+> Makanya review di sini lewat model lain, Codex, bukan lewat nambahin Claude."
 
 Paralelisme menambah kecepatan. Model yang berbeda menambah **sudut pandang**. Untuk
 review, yang kedua jauh lebih berharga.
@@ -378,116 +386,117 @@ intinya, jangan hafalkan kalimatnya.
 
 ### "Bedanya apa sama Copilot atau autocomplete di IDE?"
 
-> "Autocomplete melanjutkan kalimat yang sedang saya tulis. Yang tadi kalian lihat itu
-> membaca plan, menulis migrasi, menulis test, melihatnya gagal, lalu menulis
-> implementasinya — dan mengukur hasilnya sendiri.
+> "Autocomplete itu nerusin kalimat yang lagi saya ketik. Yang tadi kalian lihat dia
+> baca plan, nulis migrasi, nulis test, lihat test-nya gagal, baru nulis
+> implementasinya — terus ngukur hasilnya sendiri.
 >
-> Perbedaan yang sebenarnya bukan di modelnya. Autocomplete tidak punya konsep
-> 'selesai'. Agent punya: ada definition of done, ada gate verifikasi, dan dia tahu dia
-> belum selesai sampai gate itu hijau."
+> Bedanya sebenernya bukan di modelnya. Autocomplete nggak punya konsep 'selesai'.
+> Agent punya — ada definition of done, ada gate verifikasi, dan dia tau dia belum
+> kelar sampai gate-nya hijau."
 
 ### "Berapa biayanya sekali jalan?"
 
 Jangan mengarang angka. Yang jujur:
 
-> "Saya tidak punya angka pasti untuk sesi ini karena belum saya ukur per-run. Yang bisa
-> saya katakan soal bentuk biayanya: review paling mahal — dia menyebar beberapa persona
-> plus satu model lain. Implementasi jauh lebih murah dari yang orang kira, karena
-> sebagian besar tokennya dipakai membaca, bukan menulis.
+> "Saya nggak punya angka pastinya, belum saya ukur per-run. Tapi bentuk biayanya kira-
+> kira gini: review itu yang paling mahal, karena dia nyebar beberapa persona plus satu
+> model lain. Implementasi malah jauh lebih murah dari yang orang kira — soalnya
+> sebagian besar token-nya kepake buat baca, bukan nulis.
 >
-> Dan biaya yang lebih penting bukan token. Kerja minggu ini yang paling banyak makan
-> waktu bukan menjalankan agent — tapi membereskan repo sampai agentnya berguna."
+> Tapi jujur, biaya yang lebih penting itu bukan token. Yang paling makan waktu minggu
+> ini bukan jalanin agent-nya — tapi beresin repo-nya sampai agent-nya kepake."
 
 ### "Kalau agentnya salah dan nggak ketahuan gimana?"
 
 Ini pertanyaan terbaik yang bisa datang. Jawab dengan contoh nyata dari repo ini:
 
-> "Itu terjadi di repo ini, dan bukan kasus kecil.
+> "Itu kejadian di repo ini, dan bukan kasus kecil.
 >
-> Endpoint forgot-password mengembalikan token reset password di body respons — siapa
-> pun yang tahu email korban bisa ambil akunnya dalam dua request. Test suite-nya
-> **hijau**. Bukan cuma hijau: ada test yang secara eksplisit memastikan token itu
-> dikembalikan. Jadi siapa pun yang memperbaikinya akan melihat test merah dan mengira
-> dirinya yang salah.
+> Endpoint forgot-password itu ngembaliin token reset password di body respons. Jadi
+> siapa pun yang tau email korban bisa ambil akunnya cuma dengan dua request. Dan test
+> suite-nya **hijau**.
+>
+> Bukan cuma hijau — ada test yang secara eksplisit mastiin token itu dikembaliin. Jadi
+> siapa pun yang benerin bakal lihat test-nya merah, terus ngira dia sendiri yang
+> salah.
 >
 > Jadi jawabannya: test hijau itu bukti yang lebih lemah dari yang kita kira. Makanya
-> di sesi ini saya tidak cuma menjalankan test — saya mengukur. Load test untuk
-> konkurensi, query probe untuk biaya. Dua-duanya menangkap hal yang test tidak
-> tangkap."
+> di sesi ini saya nggak cuma jalanin test — saya ngukur. Load test buat konkurensi,
+> query probe buat biaya. Dua-duanya nangkep hal yang nggak ketangkep test."
 
 ### "Ini bisa dipakai di codebase legacy yang berantakan?"
 
 > "Bisa, tapi urutannya kebalik dari yang orang kira.
 >
-> Repo ini waktu saya mulai punya lima belas dokumen yang menggambarkan arsitektur yang
-> tidak ada di kodenya. Dokumen yang paling awal dibaca agent justru menyuruh membangun
-> di direktori yang tidak pernah dibuat. Agent yang nurut ke dokumentasi itu akan
-> menghasilkan kode yang yatim piatu di tengah codebase.
+> Repo ini waktu saya mulai punya lima belas dokumen yang ngegambarin arsitektur yang
+> nggak ada di kodenya. Dokumen yang paling pertama dibaca agent malah nyuruh bangun di
+> folder yang nggak pernah dibuat. Jadi agent yang nurut ke dokumentasi itu bakal
+> ngasilin kode yang yatim piatu di tengah codebase.
 >
-> Jadi untuk legacy: jangan mulai dengan menyuruh agent mengerjakan fitur. Mulai dengan
-> menyuruhnya **membaca satu area dan melaporkan apa yang sebenarnya ada di sana**, lalu
-> perbaiki dokumennya. Itu pekerjaan yang justru cocok untuk agent, dan hasilnya modal
-> untuk semua pekerjaan setelahnya."
+> Nah buat legacy: jangan mulai dengan nyuruh agent ngerjain fitur. Mulai dengan nyuruh
+> dia **baca satu area, terus laporin apa yang sebenernya ada di situ** — baru
+> dokumennya dibenerin. Itu justru kerjaan yang cocok banget buat agent, dan hasilnya
+> jadi modal buat semua kerjaan setelahnya."
 
 ### "Apa yang agent tetap tidak bisa?"
 
-> "Dia tidak bisa tahu apa yang seharusnya benar kalau tidak ada yang memberitahunya.
+> "Dia nggak bisa tau apa yang seharusnya bener kalau nggak ada yang ngasih tau.
 >
-> Contoh dari hari ini: ada test yang saya minta dia tulis untuk event dengan nol tiket.
-> Database menolaknya, karena ada CHECK constraint yang melarang event tanpa inventaris.
-> Testnya yang salah, bukan kodenya. Yang mengoreksi bukan agent, bukan saya — tapi
-> database yang punya aturannya.
+> Contoh dari hari ini. Ada test yang saya minta dia tulis buat event dengan nol tiket.
+> Databasenya nolak, karena ada CHECK constraint yang ngelarang event tanpa inventaris.
+> Jadi test-nya yang salah, bukan kodenya. Dan yang ngoreksi bukan agent, bukan saya —
+> tapi database yang megang aturannya.
 >
-> Itu pola umumnya. Agent sangat baik mengikuti aturan yang tertulis, dan buta terhadap
-> aturan yang cuma ada di kepala seseorang. Makanya aturan yang penting harus ditaruh di
-> tempat yang gagal dengan berisik: constraint database, compile error, test — bukan
-> kalimat di dokumen."
+> Itu polanya. Agent jago banget ngikutin aturan yang tertulis, tapi buta sama aturan
+> yang cuma ada di kepala orang. Makanya aturan yang penting harus ditaruh di tempat
+> yang gagalnya berisik — constraint database, compile error, test. Bukan kalimat di
+> dokumen."
 
 ### "Kode kita dikirim ke mana? Aman?"
 
 Jawab lurus, jangan berkelit:
 
-> "Untuk review, iya — ada satu pass yang dikirim ke model lain, dan skill-nya memang
-> mengumumkan itu sebelum jalan. Repo yang saya pakai hari ini publik, jadi tidak ada
-> masalah.
+> "Buat review, iya — ada satu pass yang dikirim ke model lain, dan skill-nya emang
+> ngumumin itu sebelum jalan. Repo yang saya pakai hari ini publik, jadi nggak masalah.
 >
-> Untuk repo kerjaan, itu keputusan kebijakan, bukan keputusan teknis. Passnya bisa
-> dimatikan, dan ada fallback reviewer lokal. Yang tidak saya sarankan adalah
-> menyalakannya tanpa tahu — makanya disclosure itu ada."
+> Kalau buat repo kerjaan, itu keputusan kebijakan, bukan teknis. Pass-nya bisa
+> dimatiin, dan ada fallback reviewer lokal. Yang nggak saya saranin itu nyalain tanpa
+> tau — makanya disclosure-nya ada."
 
 ### "Junior jadi nggak belajar dong?"
 
-> "Kekhawatirannya wajar, tapi menurut saya yang berubah levelnya, bukan jumlahnya.
+> "Kekhawatirannya wajar. Tapi menurut saya yang berubah itu levelnya, bukan jumlahnya.
 >
-> Yang hilang: menghafal sintaks, menulis boilerplate, mencari cara memasang sesuatu.
-> Yang justru jadi lebih penting: bisa membaca diff dan tahu mana yang salah, bisa
-> merumuskan apa yang harus benar sebelum kodenya ditulis, dan tahu kapan harus tidak
-> percaya pada test hijau.
+> Yang ilang: ngapalin sintaks, nulis boilerplate, nyari cara masang sesuatu. Yang
+> justru jadi lebih penting: bisa baca diff dan tau mana yang salah, bisa ngerumusin apa
+> yang harus bener sebelum kodenya ditulis, dan tau kapan harus nggak percaya sama test
+> hijau.
 >
-> Tiga hal itu dulu butuh bertahun-tahun untuk dilatih karena kesempatannya jarang.
-> Sekarang setiap hari."
+> Tiga hal itu dulu butuh tahunan buat dilatih, soalnya kesempatannya jarang. Sekarang
+> tiap hari."
 
 ### "Kenapa Claude Code, bukan Cursor atau yang lain?"
 
-> "Saya tidak akan mengklaim ini yang terbaik — saya cuma yang paling dalam pakai ini.
+> "Saya nggak bakal klaim ini yang paling bagus — saya cuma paling dalem makenya yang
+> ini.
 >
-> Yang membuat saya bertahan bukan modelnya, tapi bahwa workflow-nya bisa ditulis sebagai
-> skill yang masuk ke repo dan ikut versi kontrol. Pipeline yang kalian lihat hari ini
-> ada di repo, bisa direview, bisa diperbaiki. Itu bedanya dengan cara kerja yang cuma
-> ada di kepala satu orang.
+> Yang bikin saya bertahan bukan modelnya, tapi workflow-nya bisa ditulis jadi skill yang
+> masuk repo dan ikut version control. Pipeline yang kalian lihat hari ini ada di repo —
+> bisa direview, bisa diperbaiki. Beda sama cara kerja yang cuma ada di kepala satu
+> orang.
 >
-> Sebagian besar yang saya tunjukkan hari ini — konteks, pengukuran, mencatat pelajaran —
-> tidak terikat ke alat ini sama sekali."
+> Dan sebagian besar yang saya tunjukin hari ini — konteks, ngukur, nyatet pelajaran —
+> nggak keiket sama alat ini sama sekali."
 
 ### "Butuh berapa lama setup sampai bisa seperti ini?"
 
-> "Repo ini butuh beberapa hari, dan sebagian besarnya bukan setup alat — tapi
-> membereskan yang sudah ada: dokumentasi yang tidak cocok dengan kode, tooling yang
-> rusak, dan membuat dua alat ukur.
+> "Repo ini butuh beberapa hari, dan sebagian besarnya bukan setup alat — tapi beresin
+> yang udah ada. Dokumentasi yang nggak cocok sama kode, tooling yang rusak, sama bikin
+> dua alat ukur.
 >
-> Tapi itu bukan biaya yang harus dibayar di depan. Ambil satu fitur, kerjakan serapi
-> mungkin, jadikan itu contoh yang ditunjuk di prompt berikutnya. Nilainya menumpuk dari
-> situ."
+> Tapi itu bukan biaya yang harus dibayar di depan. Ambil satu fitur, kerjain serapi
+> mungkin, terus jadiin itu contoh yang ditunjuk di prompt berikutnya. Nilainya numpuk
+> dari situ."
 
 ### "Kenapa nggak pakai multi-agent?"
 
@@ -497,7 +506,7 @@ Lihat bagian [Kenapa bukan multi-agent](#kenapa-bukan-multi-agent) di atas.
 
 Akan ada. Jawab apa adanya:
 
-> "Saya tidak tahu. Belum saya coba."
+> "Saya nggak tau. Belum pernah saya coba."
 
 Lalu tulis di parking lot. Satu "saya tidak tahu" yang jujur menaikkan kepercayaan pada
 semua jawaban lain lebih banyak daripada satu jawaban yang dikarang.
