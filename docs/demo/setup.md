@@ -17,10 +17,17 @@ sudah terpasang. Yang tersisa hanya keputusan dan pemanasan.
 | jq | 1.7.1 | Membaca respons JSON di layar |
 | Plugin Claude Code | - | `compound-engineering`, `eyay-toolkits` |
 | Image `postgres:16-alpine` | - | Compose **dan** Testcontainers |
-| Modul `testcontainers-go` | v0.43, v0.44 | Integration test |
+| Modul `testcontainers-go` | v0.43, v0.44 | Integration test, E2E test |
+| `uv` / `uvx` | 0.11.32 | Menjalankan Schemathesis tanpa install permanen |
+| Schemathesis | 4.26.1 | Fuzzing kontrak API, sudah ter-cache di `~/.cache/uv` |
+| Image `ghcr.io/zaproxy/zaproxy:stable` | 1.08 GB | Scan keamanan |
 
-Dua yang terakhir penting: keduanya operasi jaringan. Sudah ter-cache, jadi tidak ada
+Lima yang terakhir penting: semuanya operasi jaringan. Sudah ter-cache, jadi tidak ada
 unduhan di panggung.
+
+Schemathesis sengaja tidak dipasang permanen. `scripts/apitest/run.sh` memanggilnya
+lewat `uvx`, yang menariknya ke environment sekali pakai. Repo ini tetap tidak punya
+dependency Python, dan mesin lo tidak ketambahan apa-apa.
 
 ---
 
@@ -154,10 +161,49 @@ go run ./scripts/nplusone
 
 # d. Semua test hijau meski bug (b) dan (c) ada
 go test ./tests/... -race
-#    -> semua ok, ~15 detik
+#    -> semua ok, ~20 detik, tests/e2e ikut di dalamnya
+
+# e. Smoke test terhadap server yang hidup
+go run ./scripts/smoke
+#    -> SEHAT, 9 dari 9 cek lolos
+
+# f. Kontrak API. Di kondisi awal ini WAJIB menemukan sesuatu
+./scripts/apitest/run.sh
+#    -> 4 failures, salah satunya 500 di /events/{id}, exit bukan 0
+
+# g. Scan keamanan, paling lambat, sekitar 1,5 menit
+./scripts/security/run.sh
+#    -> WARN-NEW: 2, FAIL-NEW: 0, PASS: 117
 ```
 
 Kalau (c) menjawab `AMAN`, bug-nya sudah keburu diperbaiki, `git log` cari commitnya.
+
+Kalau (f) menjawab `AMAN`, seseorang sudah memperbaiki bug 500-nya. Itu justru
+merusak segmen 4c, karena bahannya hilang. Cek `git log -- internal/app/controllers`.
+
+### Jebakan versi migrasi, ini pernah bikin `main` tidak bisa boot
+
+Dry run `demo/work-ready` menjalankan migrasi ke-7 di database dev. `main` cuma
+punya enam. Setelah balik ke `main`, boot gagal dengan `no migration found for
+version 7`, dan gejalanya tidak menyebut branch sama sekali.
+
+Periksa sebelum tidur:
+
+```bash
+docker exec oneticket_pg_db psql -U oneticket -d oneticket -c \
+  'SELECT version, dirty FROM schema_migrations;'
+```
+
+Di `main` harus `6` dan `dirty = f`. Kalau `7`, kembalikan:
+
+```bash
+docker exec oneticket_pg_db psql -U oneticket -d oneticket -c \
+  'DROP TABLE IF EXISTS orders CASCADE; UPDATE schema_migrations SET version = 6;'
+```
+
+Lakukan ini tiap kali selesai mencoba parasut `demo/work-ready`, termasuk saat
+latihan. Ini kegagalan yang paling mahal di daftar ini, karena terjadi di menit
+nol dan penyebabnya tidak kelihatan dari pesan errornya.
 
 ### Cek konfigurasi yang mudah terlewat
 

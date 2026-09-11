@@ -90,6 +90,42 @@ slice nyata, `internal/app/services/event_service.go`, dan tunjukkan komentar in
 **Itu menanam puncaknya.** Penonton akan mengenali momennya sendiri nanti, jauh lebih
 kuat daripada lo yang mengumumkannya.
 
+Lalu tunjukkan lapisan testnya, karena inilah yang akan dipatuhi agent nanti:
+
+```bash
+ls tests/
+ls scripts/
+```
+
+> "Di atas ada unit dan integration, yang biasa. Di bawahnya ada E2E, yang lewat socket
+> beneran dan nembus seluruh middleware. Terus di `scripts/` ada lima alat yang bukan
+> test sama sekali."
+
+Kalau masih ada waktu, satu peragaan 90 detik yang paling nempel. Buka
+`internal/app/routers/index.go`, komentari satu baris:
+
+```go
+// protectedRoutes.Use(middlewares.AuthMiddleware(authService))
+```
+
+Lalu jalankan dua-duanya:
+
+```bash
+go test ./tests/unit/... ./tests/integration/...   # enam paket, hijau semua
+go test ./tests/e2e/                               # merah
+```
+
+> "Auth-nya saya copot. Semua unit test lolos. Semua integration test lolos. Yang teriak
+> cuma E2E.
+>
+> Karena nggak ada fungsi yang salah. Yang salah itu penyambungannya, dan penyambungan
+> cuma kelihatan kalau ada yang beneran ngetok pintunya dari luar."
+
+Kembalikan barisnya, jalankan sekali lagi sampai hijau, lanjut.
+
+**Ini yang pertama dipotong kalau segmen sebelumnya molor.** Nilainya tinggi tapi
+bukan tulang punggung arc-nya.
+
 Tutup dengan kejujuran yang membangun kepercayaan:
 
 > "Repo ini nggak dari dulu begini. Waktu saya mulai, dokumentasinya ngegambarin
@@ -263,18 +299,77 @@ go run ./scripts/nplusone
 
 Biarkan angka itu menggantung sebentar. Jangan langsung lanjut.
 
+### 4c, Bug yang tidak akan pernah terpikirkan siapa pun
+
+**Tujuan.** Dua alat tadi lo yang bikin. Yang ini tidak, dan itu justru poinnya.
+
+```bash
+./scripts/apitest/run.sh
+```
+
+Selesai sebelum penonton sempat selesai membaca perintahnya.
+
+> "Ini nggak ada kode testnya sama sekali. Yang dia baca `api/openapi.yaml`, file spec
+> yang dari tadi ada di repo. Dia baca tipenya, dia baca batasnya, terus dia bikin
+> request sendiri."
+
+Tunjuk satu baris saja:
+
+```
+GET /api/v1/events/9223372036854775808  ->  500
+```
+
+> "Id-nya ke-parse sebagai unsigned 64 bit, kolomnya int 32 bit di Postgres. Bukan cuma
+> lima ratus, pesan errornya juga bawa-bawa nama driver ke luar.
+>
+> Dan jujur aja: nggak ada satu pun dari kita yang bakal nulis test pakai angka itu."
+
+Lalu kalimat yang sebenarnya mau lo tanam:
+
+> "Spec ini ditulis buat dokumentasi. Begitu diarahin ke fuzzer, file yang sama jadi
+> suite test. Dan suite-nya tumbuh sendiri tiap spec-nya nambah field."
+
+Kalau ada yang tidak percaya, tiap temuan bawa perintah `curl`-nya sendiri. Jalankan di
+layar saat itu juga.
+
+**Jangan diperbaiki live.** Ini bahan segmen berikutnya, bukan story ketiga.
+
 ---
 
-## 01:20, `/ce-code-review` (10 menit) · jendela Q&A
+## 01:20, ZAP + `/ce-code-review` (10 menit) · jendela Q&A
 
-**Tujuan.** Menunjukkan review yang berjalan paralel dan lintas model.
+**Tujuan.** Menunjukkan review yang berjalan paralel dan lintas model, sambil satu alat
+lain mengaudit dari arah yang sama sekali beda.
+
+Mulai yang lambat duluan, di terminal ketiga:
+
+```bash
+./scripts/security/run.sh
+```
+
+Biarkan jalan, sekitar satu setengah menit. Baru mulai review:
 
 > "Yang jalan sekarang beberapa persona sekaligus, plus satu peer di model lain.
 > Alasannya sederhana: model yang nulis kodenya itu pembaca paling jelek buat kode itu.
 > Dia udah yakin kodenya bener, kan dia baru aja ngeyakinin dirinya sendiri."
 
+Saat ZAP selesai, tunjuk dua baris:
+
+```
+WARN-NEW: A Server Error response code was returned by the server
+          /api/v1/events/546058336831160984 (500)
+WARN-NEW: X-Content-Type-Options Header Missing  x 6
+```
+
+> "Yang atas itu bug yang sama persis sama temuan tadi. Bedanya, alat ini nggak tau
+> apa-apa soal alat yang tadi. Dua-duanya berhenti di titik yang sama.
+>
+> Nah yang bawah ini yang menarik. Nggak akan pernah ketemu sama test Go mana pun di
+> repo ini, karena nggak ada handler yang salah. Itu setelan. Dan setelan justru yang
+> nggak pernah diliat unit test."
+
 Kandidat pertama yang dipotong kalau waktu mepet. Kalau dipotong, cukup katakan apa yang
-biasanya dia temukan.
+biasanya keduanya temukan.
 
 ---
 
@@ -383,6 +478,44 @@ review, yang kedua jauh lebih berharga.
 
 Jawaban yang sudah disiapkan untuk pertanyaan yang kemungkinan besar datang. Ambil
 intinya, jangan hafalkan kalimatnya.
+
+### "Regression test-nya yang mana?"
+
+Ini hampir pasti ditanya kalau lo nampilin piramida test, dan jawabannya bukan
+menunjuk folder.
+
+> "Nggak ada folder `tests/regression/`, dan itu disengaja.
+>
+> Regresi itu bukan lapisan, itu aturan. Aturannya: tiap bug yang diperbaiki harus
+> berangkat dari satu test yang merah dulu, dan test itu tetap tinggal di lapisan
+> asalnya setelah fix-nya jadi.
+>
+> Test N+1 yang tadi kalian lihat ditulis pas debugging, sekarang dia jadi regression
+> test. Tapi dia tetap duduk di integration, karena di situ tempatnya. Kalau saya
+> pindahin ke folder regresi, saya cuma nambah tempat orang lupa ngecek."
+
+Kalau ada yang mendesak lebih jauh:
+
+> "Bedain definisi sama tempat naruh. Definisinya: test yang lahir dari bug yang pernah
+> kejadian. Tempatnya: di mana pun bug itu hidup."
+
+### "Kenapa perlu Schemathesis sama ZAP kalau test-nya udah hijau semua?"
+
+> "Karena dua-duanya nanya hal yang nggak pernah ditanya test saya.
+>
+> Test saya nanya 'apakah yang saya pikirin udah bener'. Schemathesis nanya 'apakah
+> semua yang spec-nya bolehin itu beneran ditangani'. Itu pertanyaan yang beda, dan
+> jawabannya tadi lima ratus.
+>
+> ZAP beda lagi. Dia nggak liat kode sama sekali, dia liat yang keluar dari kabel:
+> header, format error, setelan transport. Header yang kurang tadi itu nggak akan
+> pernah ketemu sama test Go, karena nggak ada fungsi yang salah."
+
+Poin penutupnya, kalau ada ruang:
+
+> "Tiga alat, tiga sudut. Yang bikin saya percaya sama temuan lima ratus tadi bukan
+> karena satu alat bilang gitu, tapi karena dua alat yang nggak saling kenal berhenti di
+> titik yang sama."
 
 ### "Bedanya apa sama Copilot atau autocomplete di IDE?"
 

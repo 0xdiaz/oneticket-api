@@ -16,8 +16,9 @@ Yang ada baru jalur baca (GET /api/v1/events dan /events/:id).
 Flownya: user yang sudah login membeli satu tiket untuk satu event, satu tiket
 diambil dari stok yang tersedia dan menjadi miliknya.
 
-Gunakan approach Test Driven Development. Buatkan unit test dan integration test
-untuk positive, negative, dan edge case.
+Gunakan approach Test Driven Development. Buatkan unit test, integration test,
+dan E2E test untuk positive, negative, dan edge case. E2E-nya menumpang pola yang
+sudah ada di tests/e2e/.
 
 Constraint:
 - Pelajari pattern source code yang ada dulu, buat konsisten. Slice terlengkap ada
@@ -73,7 +74,8 @@ Plan harus menyebut eksplisit:
 - Migrasi baru beserta .down.sql-nya.
 - Bagaimana kepemilikan tiket dimodelkan.
 - Titik mana yang menulis ke database, lewat repository yang mana.
-- Perubahan di api/openapi.yaml.
+- Perubahan di api/openapi.yaml, termasuk batas nilai dan seluruh status code
+  jalur gagal. Spec ini dipakai sebagai alat uji, bukan cuma dokumentasi.
 - Daftar test lengkap beserta kategorinya, mengikuti konvensi di bawah.
 
 KONVENSI TEST, plan harus patuh ini:
@@ -96,6 +98,31 @@ Integration test:
   tanpa env var. Pattern lama yang membaca TEST_DB_MASTER_DSN lalu t.Skip boleh
   tetap ada untuk test yang sudah ada, tapi jangan dipakai untuk yang baru.
 
+E2E test:
+- Lokasi tests/e2e/, ikuti persis pola yang sudah ada di sana. Baca
+  tests/e2e/main_test.go, client_test.go, dan journey_test.go dulu.
+- Bedanya dengan integration: E2E lewat socket sungguhan, menembus seluruh
+  rantai middleware, dan tokennya diterbitkan endpoint login beneran. Tidak
+  boleh memanggil service atau repository langsung. Semua assertion lewat
+  http.Client.
+- Router yang dites wajib routers.SetupRoute(), bukan router yang dirakit
+  sendiri di test. Test yang mendaftarkan route-nya sendiri tidak membuktikan
+  apa pun soal route yang didaftarkan aplikasi.
+- Tambahkan perjalanan checkout ke journey yang sudah ada: daftar, login,
+  lihat event, beli tiket, lalu pastikan tiket itu benar jadi miliknya saat
+  dibaca ulang lewat HTTP.
+- Wajib ada sisi negatifnya: beli tanpa token harus 401, beli event yang tidak
+  ada harus 404, beli saat stok habis harus ditolak dengan status yang sudah
+  diputuskan di brainstorm.
+
+Smoke test:
+- Sudah ada di scripts/smoke/, dijalankan dengan `go run ./scripts/smoke`
+  terhadap server yang sudah hidup. Bukan bagian dari `go test`.
+- Kalau checkout menambah sesuatu yang wajib hidup setelah deploy, tambahkan
+  satu cek ke sana. Ikuti bentuk cek yang sudah ada.
+- Cek smoke harus murah dan tidak merusak data. Kalau sebuah cek perlu menulis,
+  jangan taruh di smoke.
+
 Negative test harus mencakup semua logic validasi.
 
 Karena ada logic keuangan (price_cents int64), sertakan test precision loss dan
@@ -104,6 +131,29 @@ rounding error. Uang tidak boleh pernah jadi float di jalur mana pun.
 Wajib ada satu integration test konkuren: N goroutine membeli bersamaan dari
 inventaris terbatas, assert tidak ada oversell dan tidak ada tiket yang terjual
 dua kali. Dijalankan dengan -race.
+
+Regresi itu aturan, bukan kategori folder. Jangan bikin tests/regression/.
+Setiap bug yang diperbaiki wajib berangkat dari satu test yang merah dulu, dan
+test itu tetap tinggal di layer asalnya setelah fix. Sebutkan aturan ini di
+plan supaya berlaku juga untuk bug yang ketemu saat implementasi.
+
+Kontrak API, Schemathesis:
+- api/openapi.yaml itu sumber kebenaran endpoint, dan dipakai sebagai alat uji
+  lewat scripts/apitest/run.sh. Spec yang melenceng dari kode langsung terlihat
+  di situ, jadi memperbarui spec bukan pekerjaan dokumentasi, itu bagian dari
+  test.
+- Untuk endpoint checkout yang baru, spec harus menyebut batas nilai yang
+  sebenarnya, bukan cuma tipe. Kalau id itu integer positif, tulis minimum-nya.
+  Tanpa itu fuzzer akan mengirim angka negatif dan raksasa yang menurut spec sah.
+- Semua kemungkinan status code harus terdaftar di spec, termasuk jalur gagal:
+  401, 404, dan status saat stok habis.
+
+Keamanan, OWASP ZAP:
+- Pesan error yang keluar ke klien tidak boleh membawa detail internal. Tidak
+  ada nama driver, nama kolom, tipe SQL, atau teks error dari library. Simpan
+  yang detail di log, kirim yang umum ke klien.
+- Endpoint checkout wajib menolak sebelum menyentuh database kalau input tidak
+  masuk akal, supaya error database tidak pernah jadi jalan keluar.
 
 Seluruh suite tidak boleh lebih dari 3 menit. Kalau perkiraannya lewat, sebutkan
 di plan cara menekannya.
@@ -134,9 +184,10 @@ commit/push/PR sendiri di tengah demo.
 
 ---
 
-## [4] Puncak, dua ukuran, 15 menit
+## [4] Puncak, tiga ukuran, 15 menit
 
-Dua alat, dua pelajaran. Jalankan berurutan.
+Tiga alat, tiga pelajaran. Jalankan berurutan. Dua yang pertama masing-masing
+lima menit, yang ketiga dua menit, sisanya nafas.
 
 ### 4a. Load test, bug yang *dicegah* konteks
 
@@ -191,17 +242,78 @@ go run ./scripts/nplusone
 
 Target: `AMAN, query tetap 2 meski event naik dari 10 ke 200`.
 
+### 4c. Spec sebagai alat uji, 2 menit
+
+Dua ukuran di atas lo yang menulis alatnya. Yang ini tidak: yang dipakai adalah
+`api/openapi.yaml` yang sudah ada di repo sejak awal.
+
+```bash
+./scripts/apitest/run.sh
+```
+
+Selesai dalam sepersekian detik, dan di kondisi awal repo ia menemukan empat hal
+di dua endpoint. Yang paling layak ditunjuk:
+
+```
+GET /api/v1/events/9223372036854775808  ->  500
+    unable to encode ... into binary format for int4 (OID 23)
+```
+
+Dua kalimat yang perlu keluar di sini:
+
+1. Spec itu ditulis buat dokumentasi. Diarahkan ke fuzzer, file yang sama jadi
+   suite test, dan suite itu tumbuh sendiri tiap spec nambah field.
+2. Temuannya bukan soal salah hitung, tapi soal batas yang tidak pernah
+   dipikirkan. Tidak ada orang yang akan menulis test `id = 9223372036854775808`.
+
+Tiap temuan datang dengan perintah `curl`-nya, jadi kalau ada yang tidak percaya,
+jalankan di layar saat itu juga.
+
+**Jangan diperbaiki live.** Ini bahan untuk segmen berikutnya, bukan story ketiga.
+
 ---
 
-## [5] `/ce-code-review`, jendela Q&A, 10 menit
+## [5] `/ce-code-review` + scan keamanan, jendela Q&A, 10 menit
+
+Segmen ini punya dua hal yang jalan barengan. Mulai yang lambat duluan, di
+terminal ketiga, lalu biarkan:
+
+```bash
+./scripts/security/run.sh
+```
+
+ZAP butuh sekitar satu setengah menit dan membaca `api/openapi.yaml` untuk tahu
+endpoint apa saja yang ada, jadi ia tidak menebak dengan cara merayapi. Sementara
+ia jalan, mulai review:
 
 ```
 /ce-code-review Review perubahan di branch ini. Kerjakan paralel.
 Outputnya format MD, simpan jadi satu file di docs/reviews/.
 ```
 
-Segmen paling lambat: menyebar beberapa persona paralel **dan** mengirim kode ke peer
-model lain. Kandidat pertama yang dipotong kalau waktu mepet.
+Sekarang dua hal mengaudit kode yang sama dari dua arah, dan lo punya jendela
+Q&A paling lebar di sesi ini. Ini juga segmen paling lambat: persona paralel
+**dan** kirim kode ke peer model lain. Kandidat pertama yang dipotong kalau
+waktu mepet.
+
+Saat ZAP selesai, yang ditunjuk cukup dua baris:
+
+```
+WARN-NEW: A Server Error response code was returned by the server
+          /api/v1/events/546058336831160984 (500)
+WARN-NEW: X-Content-Type-Options Header Missing  x 6
+```
+
+Baris pertama adalah bug yang sama dengan temuan Schemathesis tadi, ditemukan
+lewat jalan yang sama sekali berbeda. Itu yang bikin percaya: dua alat yang
+tidak saling kenal berhenti di titik yang sama.
+
+Baris kedua tidak akan pernah ketemu oleh test Go mana pun di repo ini, karena
+tidak ada handler yang salah. Itu setelan, dan setelan justru yang tidak pernah
+dilihat unit test.
+
+Laporan lengkapnya HTML di `scripts/security/reports/`. Buka kalau ada yang
+minta, 117 cek lain statusnya PASS dan itu juga informasi.
 
 ---
 

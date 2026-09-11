@@ -22,9 +22,16 @@ purpose**:
    for it is on `demo/plan-ready`. `main` must stay without it.
 2. **`EventService.List` has an N+1.** It counts availability once per event. This is the bug the
    demo diagnoses on stage. `go run ./scripts/nplusone` reports `200 event -> 202 query`.
+3. **`GET /api/v1/events/{id}` answers 500 on an out-of-range id**, and leaks the driver's own
+   message while doing it (`unable to encode ... into binary format for int4 (OID 23)`). The id is
+   parsed as `uint64` and handed to an `int4` column. Both `scripts/apitest` and `scripts/security`
+   find it independently, which is the demo's point: two tools that know nothing about each other
+   stop at the same line.
+4. **No `X-Content-Type-Options` header.** A configuration gap that no Go test in this repo covers,
+   because no handler is wrong.
 
-If a task asks you to add checkout or fix the N+1, do it, but say plainly that it removes a demo
-beat, and prefer a branch over `main`.
+If a task asks you to add checkout, fix the N+1, or fix either scanner finding, do it, but say
+plainly that it removes a demo beat, and prefer a branch over `main`.
 
 ## Security requirements
 
@@ -248,6 +255,21 @@ healthcheck exactly when it matters.
 
   The harness terminates its container inside `RunMain` rather than via `defer` in the caller,
   because `os.Exit` in `TestMain` skips deferred calls and would leak a container per package.
+  `RunMain` also takes optional `before` hooks that run after migrations and before any test; the
+  e2e package uses one to stand up its HTTP server, which cannot be built earlier because its
+  handlers resolve repositories that need `database.DB` already wired.
+
+- **E2E tests live in `tests/e2e/` and are a different layer from integration**, not a thicker
+  version of it. Integration calls services directly and proves a service and its repository agree
+  about the database. E2E goes over a real socket through the whole middleware chain, with a token
+  minted by the real login endpoint, and proves the pieces are wired together at all. Use
+  `routers.SetupRoute()`, never a router assembled inside the test: a test that registers its own
+  routes proves nothing about the ones the application registers.
+
+  This layer owns a bug class no other layer sees. Comment out the `AuthMiddleware` line in
+  `internal/app/routers/index.go` and all six unit and integration packages stay green while
+  `tests/e2e` goes red. A handler can be correct and unreachable; a guard can be correct and
+  attached to the wrong group.
 
 - **Constraints belong in the migration, not only in Go.** `CHECK (status IN ('available','sold'))`
   and `UNIQUE (event_id, code)` are enforced by the database, so an application bug cannot write a
@@ -262,7 +284,19 @@ healthcheck exactly when it matters.
 
 ## Measuring, not just testing
 
-Two probes exist because two classes of defect pass every test.
+Five tools live in `scripts/` because five classes of defect pass every test. None of them is a
+`go test`, and none belongs behind `make` during a demo: their exit code is the verdict, so make
+appends `make: *** Error 1` right after the result.
+
+| Tool | Question it answers | Needs a live server |
+|---|---|---|
+| `scripts/loadtest` | Does concurrency corrupt the inventory | yes |
+| `scripts/nplusone` | What does one request cost, not whether it is right | no |
+| `scripts/smoke` | Is the thing that shipped actually alive | yes |
+| `scripts/apitest` | Do the answers match the API's own spec | yes |
+| `scripts/security` | Is anything leaking outside the handlers | yes |
+
+Each is described below.
 
 **`scripts/loadtest`**, concurrent purchases against a fixed inventory. Reports whether the event
 oversold and exits non-zero if it did. Verified against a naive implementation (300 sold from 100,
@@ -275,8 +309,24 @@ Neither is a test, and that is the point: **N+1 passes the entire suite.** The r
 just expensive, no assertion fails, nothing is red. When you change a read path that fans out over
 rows, or a write path under concurrency, run the probe rather than trusting green.
 
-Neither belongs behind `make` during a demo: their exit code is the verdict, so make appends
-`make: *** Error 1` immediately after it.
+**`scripts/smoke`** answers a different question from every test above: not whether the code is
+correct, but whether the thing that is running is actually running. Nine cheap read-only checks
+against a live server. The one that matters most is that `/api/v1/profile` **refuses** a request
+with no token, because a guard that has stopped guarding still answers 200 and nothing else would
+notice.
+
+**`scripts/apitest`** points Schemathesis at `api/openapi.yaml`. It writes no test code: every case
+comes from the contract already in the repo, so the suite grows on its own whenever the spec gains
+a field. That makes keeping the spec honest a testing job, not a documentation job. Read-only
+endpoints by default; `--all` includes the ones that write, which needs a throwaway database.
+
+**`scripts/security`** runs OWASP ZAP against the same spec. It covers what lives outside the
+handlers: response headers, information leaked by the error format, transport settings. Passive by
+default, `--active` sends real attack payloads and belongs nowhere near data you care about.
+
+**Regression is a rule, not a folder.** There is no `tests/regression/`. Every bug fix starts from
+one test that is red first, and that test then stays in whichever layer it was born in. A test born
+from a fixed bug is a regression test wherever it sits.
 
 ## Committing
 

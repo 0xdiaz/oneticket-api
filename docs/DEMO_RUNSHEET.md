@@ -98,8 +98,8 @@ tolak di tempat. Refund adalah story kedua, dan itu justru buktinya nanti.
 | 00:16 | 12' | 🎬 **`/ce-brainstorm`**, live, time box keras | ❌ lo jawab agent |
 | 00:28 | 15' | 🎬 **`/ce-plan`**, live, menghasilkan `docs/plans/checkout.md` | ❌ lo jawab agent |
 | 00:43 | 22' | 🎬 **`/ce-work docs/plans/checkout.md`**, agent implement | ✅ **jendela besar** |
-| 01:05 | 15' | 🎬 **Puncak**. Query probe → `202 query` → `/ce-debug` → fix → `2 query` | sedikit |
-| 01:20 | 10' | 🎬 **`/ce-code-review`**, fan-out persona paralel | ✅ **jendela** |
+| 01:05 | 15' | 🎬 **Puncak**. Load test → query probe `202 query` → `/ce-debug` → fix → `2 query` → Schemathesis nemu 500 | sedikit |
+| 01:20 | 10' | 🎬 **ZAP jalan di background** + **`/ce-code-review`** fan-out persona paralel | ✅ **jendela** |
 | 01:30 | 7' | 🎬 **`/ce-compound`**, learning masuk `docs/solutions/` | - |
 | 01:37 | 13' | 🎬 **Story kedua (refund)**, agent pakai pola locking tanpa disuruh | ✅ **jendela** |
 | 01:50 | 8' | **Takeaway + Q&A terbuka** | ✅ |
@@ -209,6 +209,15 @@ Siapkan **parking lot**, tulis di papan, jawab di segmen 01:50.
       balas `BELUM ADA YANG TERJUAL` (404), itu kondisi awal yang benar
 - [ ] `go run ./scripts/nplusone` balas `N+1, query ikut tumbuh` dengan
       `200 event -> 202 query`. Kalau balas AMAN, bugnya sudah keburu diperbaiki
+- [ ] `go run ./scripts/smoke` balas `SEHAT, 9 dari 9 cek lolos`
+- [ ] `./scripts/apitest/run.sh` nemu 4 temuan termasuk 500 di `/events/{id}`.
+      Kalau balas AMAN, bahan segmen 4c hilang
+- [ ] `./scripts/security/run.sh` balas `WARN-NEW: 2, FAIL-NEW: 0, PASS: 117`
+- [ ] `schema_migrations` di database dev ada di versi **6**, bukan 7. Dry run
+      `demo/work-ready` menaikkannya ke 7 dan `main` jadi tidak bisa boot sama
+      sekali. Perintah pemulihannya ada di `docs/demo/setup.md`
+- [ ] `docker image inspect ghcr.io/zaproxy/zaproxy:stable` sukses (~1,1 GB)
+- [ ] `uvx --from schemathesis st --version` balas cepat, artinya sudah ter-cache
 - [ ] `RATE_LIMIT_RPS=1000` di `.env`, di 100, rate limiter nolak duluan dan
       **oversell-nya nggak akan pernah muncul**
 - [ ] Testcontainers siap: `docker image inspect postgres:16-alpine` sukses, dan
