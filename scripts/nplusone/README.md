@@ -66,6 +66,9 @@ Kedua keadaan sudah diverifikasi sebelum alat ini di-commit.
 
 Exit code adalah vonisnya, jadi hasilnya lulus/gagal di layar.
 
+`go run` tidak meneruskan exit code ini: ia mencetak `exit status 1` sebagai teks
+lalu keluar dengan 1. Kompilasi dulu kalau exit code-nya mau dipakai skrip.
+
 ## Catatan untuk demo
 
 - Log statement GORM dimatikan di dalam alat ini. Tanpa itu, ratusan baris SQL

@@ -28,6 +28,9 @@ mengharapkan penolakan yang bisa melihatnya.
 
 Exit code: `0` sehat, `1` ada cek yang gagal.
 
+`go run` tidak meneruskan exit code ini: ia mencetak `exit status 1` sebagai teks
+lalu keluar dengan 1. Kompilasi dulu kalau exit code-nya mau dipakai skrip.
+
 Smoke bukan pengganti test. Ia tidak tahu apakah logikanya benar, ia cuma tahu
 apakah yang seharusnya hidup memang hidup. Jalankan setelah deploy, bukan
 sebelum commit.

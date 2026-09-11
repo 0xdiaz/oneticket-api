@@ -288,6 +288,10 @@ Five tools live in `scripts/` because five classes of defect pass every test. No
 `go test`, and none belongs behind `make` during a demo: their exit code is the verdict, so make
 appends `make: *** Error 1` right after the result.
 
+The exit code only survives a compiled binary. `go run` prints `exit status 3` as text and exits 1
+itself, so script anything that branches on the code with `go build -o probe ./scripts/<tool>`
+first. The two shell wrappers (`apitest`, `security`) pass their codes through unchanged.
+
 | Tool | Question it answers | Needs a live server |
 |---|---|---|
 | `scripts/loadtest` | Does concurrency corrupt the inventory | yes |

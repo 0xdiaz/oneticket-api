@@ -153,11 +153,11 @@ curl -s localhost:8000/api/v1/events | jq '.data[0] | {name, available_tickets}'
 # b. Checkout BELUM ada, ini kondisi awal yang benar
 ./scripts/loadtest/reset.sh
 go run ./scripts/loadtest -n 300 -c 80
-#    -> BELUM ADA YANG TERJUAL (300x 404), exit 3
+#    -> BELUM ADA YANG TERJUAL (300x 404), lalu 'exit status 3'
 
 # c. N+1 MASIH ada, ini bug yang diperbaiki live
 go run ./scripts/nplusone
-#    -> N+1, 200 event -> 202 query, exit 1
+#    -> N+1, 200 event -> 202 query, lalu 'exit status 1'
 
 # d. Semua test hijau meski bug (b) dan (c) ada
 go test ./tests/... -race
@@ -177,6 +177,13 @@ go run ./scripts/smoke
 ```
 
 Kalau (c) menjawab `AMAN`, bug-nya sudah keburu diperbaiki, `git log` cari commitnya.
+
+Catatan soal exit code: `go run` **tidak** meneruskan exit code programnya. Ia
+mencetak `exit status 3` sebagai teks lalu keluar dengan 1. Yang dibaca di panggung
+memang teksnya, jadi ini tidak mengganggu. Tapi kalau salah satu langkah di atas
+dimasukkan ke skrip, kompilasi dulu (`go build -o probe ./scripts/loadtest`), karena
+di situ barulah exit code-nya utuh. Dua script `.sh` tidak kena, keduanya meneruskan
+exit code dengan benar.
 
 Kalau (f) menjawab `AMAN`, seseorang sudah memperbaiki bug 500-nya. Itu justru
 merusak segmen 4c, karena bahannya hilang. Cek `git log -- internal/app/controllers`.
