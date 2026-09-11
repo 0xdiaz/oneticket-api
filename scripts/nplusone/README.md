@@ -8,7 +8,7 @@ adalah tanda tangan N+1.
 
 N+1 **lolos seluruh test suite.** Hasilnya benar, cuma mahal. Tidak ada
 assertion yang gagal, tidak ada error di log, tidak ada yang merah. Itulah yang
-membuatnya berbahaya — dan kenapa butuh alat yang mengukur biaya, bukan
+membuatnya berbahaya, dan kenapa butuh alat yang mengukur biaya, bukan
 kebenaran.
 
 Ini bug dengan pelajaran berbeda dari race condition: race ketahuan kalau
@@ -37,7 +37,7 @@ Sebelum diperbaiki:
       10          12       7.402ms  1.20
      200         202      16.835ms  1.01
 
-N+1 — query ikut tumbuh bersama jumlah baris
+N+1, query ikut tumbuh bersama jumlah baris
 ```
 
 Sesudah diperbaiki:
@@ -47,7 +47,7 @@ Sesudah diperbaiki:
       10           2       3.541ms  0.20
      200           2       4.114ms  0.01
 
-AMAN — query tetap 2 meski event naik dari 10 ke 200
+AMAN, query tetap 2 meski event naik dari 10 ke 200
 ```
 
 Kolom `QUERY/EVENT` yang mendekati 1,0 adalah tanda tangannya. Yang penting
@@ -60,8 +60,8 @@ Kedua keadaan sudah diverifikasi sebelum alat ini di-commit.
 
 | Kode | Arti |
 |---|---|
-| 0 | Query tetap — tidak ada N+1 |
-| 1 | Query tumbuh bersama baris — N+1 terdeteksi |
+| 0 | Query tetap, tidak ada N+1 |
+| 1 | Query tumbuh bersama baris, N+1 terdeteksi |
 | 2 | Tidak bisa connect, seed gagal, atau ukuran kurang dari dua |
 
 Exit code adalah vonisnya, jadi hasilnya lulus/gagal di layar.
@@ -69,6 +69,6 @@ Exit code adalah vonisnya, jadi hasilnya lulus/gagal di layar.
 ## Catatan untuk demo
 
 - Log statement GORM dimatikan di dalam alat ini. Tanpa itu, ratusan baris SQL
-  mengubur vonisnya — persis hal yang harus tetap terbaca di proyektor.
+  mengubur vonisnya, persis hal yang harus tetap terbaca di proyektor.
 - Jangan bungkus dengan `make`: exit code-nya adalah vonis, jadi make akan
   menambahkan `make: *** Error 1` tepat setelah vonis muncul.

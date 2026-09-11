@@ -9,7 +9,7 @@ import (
 func printHeader(sizes []int, ticketsPer int) {
 	fmt.Println()
 	fmt.Println(strings.Repeat("=", 56))
-	fmt.Println("  QUERY COUNT PROBE — GET /api/v1/events")
+	fmt.Println("  QUERY COUNT PROBE, GET /api/v1/events")
 	fmt.Println(strings.Repeat("=", 56))
 	fmt.Printf("  Ukuran     : %v event\n", sizes)
 	fmt.Printf("  Per event  : %d tiket\n", ticketsPer)
@@ -45,7 +45,7 @@ func report(results []result) int {
 
 	if scales {
 		fmt.Println("  " + strings.Repeat("!", 54))
-		fmt.Printf("  N+1 — query ikut tumbuh bersama jumlah baris\n")
+		fmt.Printf("  N+1, query ikut tumbuh bersama jumlah baris\n")
 		fmt.Println("  " + strings.Repeat("!", 54))
 		fmt.Printf("      %d event -> %d query\n", first.events, first.queries)
 		fmt.Printf("      %d event -> %d query\n", last.events, last.queries)
@@ -57,7 +57,7 @@ func report(results []result) int {
 	}
 
 	fmt.Println("  " + strings.Repeat("-", 54))
-	fmt.Printf("  AMAN — query tetap %d meski event naik dari %d ke %d\n",
+	fmt.Printf("  AMAN, query tetap %d meski event naik dari %d ke %d\n",
 		last.queries, first.events, last.events)
 	fmt.Println("  " + strings.Repeat("-", 54))
 	fmt.Println()

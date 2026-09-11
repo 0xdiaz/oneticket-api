@@ -103,7 +103,7 @@ func connect() error {
 		return err
 	}
 	// Silence GORM's statement log. This tool counts queries; printing all of
-	// them would bury the verdict under hundreds of lines — exactly the thing
+	// them would bury the verdict under hundreds of lines, exactly the thing
 	// that must stay readable on a projector.
 	if cfg := config.Get(); cfg != nil {
 		cfg.Database.LogMode = false
